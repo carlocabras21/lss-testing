@@ -5,10 +5,10 @@ Q = eye(m);
 
 if triang_type == "householder" % testato e funzionante
     
-    if m <=n
-        nf=n-1; 
+    if m > n
+        nf = n;
     else
-        nf=n; 
+        nf = m-1;
     end
     
     for j = 1:nf
@@ -24,10 +24,10 @@ elseif triang_type == "householder-light" % testato e funzionante
     % in questa versione evito di calcolare la matrice H: così le
     % moltiplicazioni avvengono solo tra matrice e vettore
     
-    if m <=n
-        nf=n-1; 
+    if m > n
+        nf = n;
     else
-        nf=n; 
+        nf = m-1;
     end
     
     for j = 1:nf
@@ -41,15 +41,16 @@ elseif triang_type == "householder-light" % testato e funzionante
         % A = H*A;
         A = H_per_A(A, w, j, m-j+1);
         % Q = Q*H;
-        Q = Q_per_H(Q, w, j, m-j+1);
+        Q = Q_per_H(Q, w, j);
     end
   
     
 elseif triang_type == "givens" % testato e funzionante
-    if m <=n
-        nf=n-1; 
+
+    if m > n
+        nf = n;
     else
-        nf=n; 
+        nf = m-1;
     end
     
     for j = 1:nf
@@ -67,10 +68,10 @@ elseif triang_type == "givens-light"
     C = zeros(m,n);
     S = zeros(m,n);
     
-    if m <=n
-        nf=n-1; 
+    if m > n
+        nf = n;
     else
-        nf=n; 
+        nf = m-1;
     end
     
     for k = 1:nf
