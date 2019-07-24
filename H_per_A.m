@@ -8,6 +8,8 @@ function A = H_per_A(A,w,j,l)
 % H * A = |         | * |           | = |                |
 %         | 0   H_t |   |  0   A_22 |   |   0   A_22*H_t |
 %
+% H * A = (I - 2*w*w') * A = A - 2*w*(w'*A)
+%
 % questa funzione implementa H*A, quando la H è stata creata "bordando"
 % la H_tilde. La "bordatura" è implementata andando a modificare soltanto
 % soltanto la parte in basso a destra della matrice. Non ci sono prodotti
