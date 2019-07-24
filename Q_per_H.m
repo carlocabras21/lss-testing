@@ -15,15 +15,18 @@ function Q = Q_per_H(Q,w,j,l)
 
 
 % prime l righe, colonne dalla j-esima alla fine
-Q_12 = Q(1:end-l, j:end); 
+% Q_12 = Q(1:end-l, j:end); 
 % ultime l righe, colonne dalla j-esima alla fine
-Q_22 = Q(end-l+1:end, j:end);
+% Q_22 = Q(end-l+1:end, j:end);
 
 % Q_12*H_t
-Q(1:end-l, j:end) = Q_12-2*(Q_12*w)*w';
+% Q(1:end-l, j:end) = Q_12-2*(Q_12*w)*w';
 % Q(1:l, j:end) = Q_12*H;
 
 % Q_22*H_t
-Q(end-l+1:end, j:end)  = Q_22-2*(Q_22*w)*w';
+% Q(end-l+1:end, j:end)  = Q_22-2*(Q_22*w)*w';
 % Q(end-l+1:end, j:end)  = Q_22*H;
+
+% operazioni riducibili semplicemente a:
+Q(:, j:end) = Q(:, j:end) - 2*(Q(:, j:end)*w)*w';
 

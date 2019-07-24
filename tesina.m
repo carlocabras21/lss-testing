@@ -23,8 +23,10 @@ i = 1;
 
 dimensions = 50:10:100;
 
-tempi = zeros(length(dimensions),7);
-differenze = zeros(length(dimensions),7);
+tempi  = zeros(length(dimensions),7);
+e_sol  = zeros(length(dimensions),7);
+e_fact = zeros(length(dimensions),7);
+e_orth = zeros(length(dimensions),5);
 
 for n = dimensions
     fprintf('n: %d\n',n);
@@ -40,8 +42,10 @@ for n = dimensions
     [Q,R] = myqr(A, "householder");
     y = Q'*b;
     x = R\y;
-    tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    tempi(i,k)  = toc;
+    e_sol(i,k)  = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(n));
+    e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
     
     tic;
@@ -49,7 +53,9 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(n));
+    e_fact(i,k) = norm(A-Q*R);
     k = k+1;
     
     tic;
@@ -57,7 +63,9 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(n));
+    e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
     
     tic;
@@ -65,7 +73,9 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(n));
+    e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
     
     tic;
@@ -73,19 +83,23 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(n));
+    e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
 
         
     % Cholesky con n >100 non funziona più, mi dice che la matrice deve
-    % essere definita positiva
+    % essere definita positiva. Probabilmente è dovuto al fatto che A'*A è
+    % una matrice di ordine 10'000 e ci sono troppi errori
     
     tic;
     R = mychol(A'*A);
     y = R'\(A'*b);
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_fact(i,k) = norm(A-R'*R);
     k = k + 1;
 
     tic;
@@ -93,7 +107,8 @@ for n = dimensions
     y = R'\(A'*b);
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_fact(i,k) = norm(A-R'*R);
     k = k + 1;
     
     i = i+1;
@@ -101,12 +116,21 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, differenze); title("differenze");
+semilogy(dimensions, e_sol); title("errori di soluzione");
 legend('householder','householder-light','givens','givens-light','qr','mychol','chol');
 
 figure(2); 
 semilogy(dimensions, tempi); title("tempi");
 legend('householder','householder-light','givens','givens-light','qr','mychol','chol');
+
+figure(3); 
+semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+legend('householder','householder-light','givens','givens-light','qr');
+
+figure(4); 
+semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+legend('householder','householder-light','givens','givens-light','qr','mychol','chol');
+
 
 % ************************************************************************
 % TEST 2: visto che Cholesky non funziona più per n >120, in questo
@@ -119,8 +143,10 @@ i = 1;
 
 dimensions = 50:50:500;
 
-tempi = zeros(length(dimensions),3);
-differenze = zeros(length(dimensions),3);
+tempi  = zeros(length(dimensions),3);
+e_sol  = zeros(length(dimensions),3);
+e_orth = zeros(length(dimensions),3);
+e_fact = zeros(length(dimensions),3);
 
 for n = dimensions
     fprintf('n: %d\n',n);
@@ -138,7 +164,9 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(n));
+    e_fact(i,k) = norm(A-Q*R);
     k = k+1;
 
     tic;
@@ -146,7 +174,9 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(n));
+    e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
     
     tic;
@@ -154,7 +184,9 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(n));
+    e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
     
     i = i+1;
@@ -162,12 +194,21 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, differenze); title("differenze");
+semilogy(dimensions, e_sol); title("errori di soluzione");
 legend('householder-light','givens-light','qr');
 
 figure(2); 
 semilogy(dimensions, tempi); title("tempi");
 legend('householder-light','givens-light','qr');
+
+figure(3); 
+semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+legend('householder-light','givens-light','qr');
+
+figure(4); 
+semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+legend('householder-light','givens-light','qr');
+
 
 % ************************************************************************
 % TEST 3: comparazione tra mio Householder-light e qr di MATLAB, con
@@ -179,8 +220,10 @@ i = 1;
 
 dimensions = 1000:500:1500;
 
-tempi = zeros(length(dimensions),2);
-differenze = zeros(length(dimensions),2);
+tempi  = zeros(length(dimensions),2);
+e_sol  = zeros(length(dimensions),2);
+e_orth = zeros(length(dimensions),2);
+e_fact = zeros(length(dimensions),2);
 
 for n = dimensions
     fprintf('n: %d\n',n);
@@ -198,7 +241,9 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(n));
+    e_fact(i,k) = norm(A-Q*R);
     k = k+1;
 
     tic;
@@ -206,7 +251,9 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(n));
+    e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
     
     i = i+1;
@@ -214,75 +261,41 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, differenze); title("differenze");
+semilogy(dimensions, e_sol); title("errori di soluzione");
 legend('householder-light','qr');
 
 figure(2); 
 semilogy(dimensions, tempi); title("tempi");
 legend('householder-light','qr');
 
-% ************************************************************************
-% TEST 4: differenza tra mychol e chol di MATLAB. A matrice quadrata nxn.
-% ************************************************************************
+figure(3); 
+semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+legend('householder-light','qr');
 
-i = 1;
-
-dimensions = 10:10:100;
-
-tempi = zeros(length(dimensions),2);
-differenze = zeros(length(dimensions),2);
-
-for n = dimensions
-    fprintf('n: %d\n',n);
-    
-	A = rand(n,n);
-    
-    sol = ones(n,1);
-    b = A*sol;
-    
-    k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
-           % tenere conto di quanti algoritmi sto testando
-    
-    tic;
-    R = mychol(A'*A);
-    y = R'\(A'*b);
-    x = R\y;
-    tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
-    k = k + 1;
-
-    tic;
-    R = chol(A'*A);
-    y = R'\(A'*b);
-    x = R\y;
-    tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
-    k = k + 1;
-    
-    i = i+1;
-
-end
-
-figure(1); 
-semilogy(dimensions, differenze); title("differenze");
-legend('mychol','chol');
-
-figure(2); 
-semilogy(dimensions, tempi); title("tempi");
-legend('mychol','chol');
+figure(4); 
+semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+legend('householder-light','qr');
 
 % ************************************************************************
-% TEST 5: matrice triangolare superiore con diagonali in più
+% TEST 4: matrice triangolare superiore con diagonali in più
 % dimensioni di A fissate a 500x500, cambia il numero delle sottodiagonali.
 % Confrontro tra Householder-light, Givens-light e qr di MATLAB.
 % ************************************************************************
+% funziona male per matrici quasi triangolari, quindi parto con 4
+% sottodiagonali
+% Warning: Matrix is close to singular or badly scaled. Results may be 
+% inaccurate. RCOND =  6.550039e-22. 
+% Si nota comunque che Givens-light vince su Householder-light, ma non su
+% qr di Matlab
 
 i = 1;
 
-dimensions = 2:2:20;
+dimensions = 4:2:20;
 
-tempi = zeros(length(dimensions),3);
-differenze = zeros(length(dimensions),3);
+tempi  = zeros(length(dimensions),3);
+e_sol  = zeros(length(dimensions),3);
+e_orth = zeros(length(dimensions),3);
+e_fact = zeros(length(dimensions),3);
 
 for n = dimensions
     fprintf('sottodiagonali: %d\n',n);
@@ -306,15 +319,19 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(dim));
+    e_fact(i,k) = norm(A-Q*R);
     k = k+1;
-
+    
     tic;
     [Q,R] = myqr(A, "givens-light");
     y = Q'*b;
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(dim));
+    e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
     
     tic;
@@ -322,7 +339,9 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     tempi(i,k) = toc;
-    differenze(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol);
+    e_orth(i,k) = norm(Q*Q'-eye(dim));
+    e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
     
     i = i+1;
@@ -330,22 +349,159 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, differenze); title("differenze");
+semilogy(dimensions, e_sol); title("errori di soluzione");
 legend('householder-light','givens-light','qr');
 
 figure(2); 
 semilogy(dimensions, tempi); title("tempi");
 legend('householder-light','givens-light','qr');
 
+figure(3); 
+semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+legend('householder-light','givens-light','qr');
+
+figure(4); 
+semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+legend('householder-light','givens-light','qr');
 
 % ************************************************************************
-% TEST 6: problemi duali
+% TEST 5: differenza tra mychol e chol di MATLAB. A matrice quadrata nxn.
 % ************************************************************************
 
+i = 1;
+
+dimensions = 10:10:100;
+
+tempi  = zeros(length(dimensions),2);
+e_sol  = zeros(length(dimensions),2);
+e_fact = zeros(length(dimensions),2);
+
+for n = dimensions
+    fprintf('n: %d\n',n);
+    
+	A = rand(n,n);
+    
+    sol = ones(n,1);
+    b = A*sol;
+    
+    k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
+           % tenere conto di quanti algoritmi sto testando
+    
+    tic;
+    R = mychol(A'*A);
+    y = R'\(A'*b);
+    x = R\y;
+    tempi(i,k) = toc;
+    e_sol(i,k) = norm(x-sol);
+    e_fact(i,k) = norm(A-R'*R);
+    k = k + 1;
+
+    tic;
+    R = chol(A'*A);
+    y = R'\(A'*b);
+    x = R\y;
+    tempi(i,k) = toc;
+    e_sol(i,k) = norm(x-sol);
+    e_fact(i,k) = norm(A-R'*R);
+    k = k + 1;
+    
+    i = i+1;
+
+end
+
+figure(1); 
+semilogy(dimensions, e_sol); title("errori di soluzione");
+legend('mychol','chol');
+
+figure(2); 
+semilogy(dimensions, tempi); title("tempi");
+legend('mychol','chol');
+
+figure(4); 
+semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+legend('mychol','chol');
+
+% ************************************************************************
+% TEST 6: differenza tra Cholesky con matrici rettangolari verticali
+% ************************************************************************
+
+i = 1;
+
+dimensions = 10:10:100;
+
+tempi = zeros(length(dimensions),2);
+e_sol = zeros(length(dimensions),2);
+e_fact = zeros(length(dimensions),2);
+
+for n = dimensions
+    fprintf('n: %d\n',n);
+    
+	A = rand(110,n);
+    
+    sol = ones(n,1);
+    b = A*sol;
+    
+    k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
+           % tenere conto di quanti algoritmi sto testando
+    
+    tic;
+    R = mychol(A'*A);
+    y = R'\(A'*b);
+    x = R\y;
+    tempi(i,k) = toc;
+    e_sol(i,k) = norm(x-sol);
+    e_fact(i,k) = norm(A-R'*R);
+    k = k + 1;
+
+    tic;
+    R = chol(A'*A);
+    y = R'\(A'*b);
+    x = R\y;
+    tempi(i,k) = toc;
+    e_sol(i,k) = norm(x-sol);
+    e_fact(i,k) = norm(A-R'*R);
+    k = k + 1;
+    
+    i = i+1;
+
+end
+
+figure(1); 
+semilogy(dimensions, e_sol); title("errori di soluzione");
+legend('mychol','chol');
+
+figure(2); 
+semilogy(dimensions, tempi); title("tempi");
+legend('mychol','chol');
+
+figure(4); 
+semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+legend('mychol','chol');
 
 % ************************************************************************
 % TEST 7:
 % ************************************************************************
+
+
+% ************************************************************************
+% TEST 8:
+% ************************************************************************
+
+
+
+% ************************************************************************
+% TEST 9:
+% ************************************************************************
+
+
+
+% ************************************************************************
+% TEST 10:
+% ************************************************************************
+
+
+
+    
 
 
 
