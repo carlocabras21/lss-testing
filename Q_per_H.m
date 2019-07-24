@@ -1,4 +1,4 @@
-function Q = Q_per_H(Q,w,j,l)
+function Q = Q_per_H(Q,w,j)
 % Q: matrice
 % w: vettore di Householder
 % j: colonna corrente
@@ -11,9 +11,11 @@ function Q = Q_per_H(Q,w,j,l)
 %         | Q_11 Q_12 |   | I    0  |   | Q_11  Q_12*H_t |
 % Q * H = |           | * |         | = |                |
 %         | Q_21 Q_22 |   | 0   H_t |   | Q_21  Q_22*H_t |
-% 
-
-
+%
+% Q * H = Q * (I - 2*w*w') = Q - 2*(Q*w)*w'
+%
+% l = length(w);
+%
 % prime l righe, colonne dalla j-esima alla fine
 % Q_12 = Q(1:end-l, j:end); 
 % ultime l righe, colonne dalla j-esima alla fine
