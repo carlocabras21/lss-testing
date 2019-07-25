@@ -134,7 +134,7 @@ semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
 legend('householder','householder-light','givens','givens-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact); title("errori di fattorizzazione");
 legend('householder','householder-light','givens','givens-light','qr','mychol','chol');
 
 figure(5); 
@@ -219,7 +219,7 @@ semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
 legend('householder-light','givens-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact); title("errori di fattorizzazione");
 legend('householder-light','givens-light','qr');
 
 figure(5); 
@@ -292,7 +292,7 @@ semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
 legend('householder-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact); title("errori di fattorizzazione");
 legend('householder-light','qr');
 
 figure(5); 
@@ -386,7 +386,7 @@ semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
 legend('householder-light','givens-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact); title("errori di fattorizzazione");
 legend('householder-light','givens-light','qr');
 
 figure(5); 
@@ -456,7 +456,7 @@ semilogy(dimensions, t_sol); title("tempi di risoluzione");
 legend('mychol','chol');
 
 figure(4); 
-semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact); title("errori di fattorizzazione");
 legend('mychol','chol');
 
 figure(5); 
@@ -532,7 +532,7 @@ semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
 legend('householder-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact); title("errori di fattorizzazione");
 legend('householder-light','qr');
 
 figure(5); 
@@ -623,7 +623,7 @@ semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
 legend('householder-light','givens-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact); title("errori di fattorizzazione");
 legend('householder-light','givens-light','qr');
 
 figure(5); 
@@ -643,52 +643,61 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 
 % ********************************************************************** %
 % TEST 3.1: differenza tra Cholesky con matrici rettangolari orizzontali.
+% Sistema visto come A'y = c, con A mxn m>n. Tra le infinite soluzioni, 
+% prendo quella di minima norma.
+% Sia il sistema A'y = c, la risoluzione è data dal sistema:
+% | A'Az = c
+% | y = Az
+% come prima cosa fattorizzo A'A = R'*R, ottenendo: R'*R*z = c, quindi,
+% chiamando t = R*z, ottengo il sistema:
+% | R'*t = c  ; | t = R'\c
+% | R*z = t     | z = R\t
+% dopodiché trovo la soluzione y come y = A*z
 % ********************************************************************** %
-% NON FUNZIONA. Il problema sta negli autovalori ed a problemi di calcolo:
-% risulta che il primo autovalore è uno "zero negativo", ovvero poco poco
-% più piccolo di zero, es. -2.23e-16. Quindi risulta che la matrice non è
-% definita positiva e chol() non può proseguire con i calcoli.
+
 
 clear variables;
 
 i = 1;
 
-dimensions = 30:10:100;
+dimensions = 30:10:90;
 
 t_sol  = zeros(length(dimensions),2);
 e_sol  = zeros(length(dimensions),2);
 e_fact = zeros(length(dimensions),2);
 n_cond = zeros(length(dimensions),1);
 
-for m = dimensions
-    fprintf('n: %d\n', m);
+for n = dimensions
+    fprintf('n: %d\n',n);
     
-    n = 110;
+    m = 100;
 	A = rand(m,n);
     n_cond(i) = cond(A);
     
-    sol = ones(n,1);
-    b = A*sol;
+    sol = ones(m,1);
+    c = A'*sol;
     
     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
            % tenere conto di quanti algoritmi sto testando
-
+    
     tic;
-    R = mychol(A'*A);
-    y = R'\(A'*b);
-    x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
-    e_fact(i,k) = norm(A'*A-R'*R);
+    R = mychol(A'*A); 
+    t = R'\c;
+    z = R\t;
+    y = A*z;
+    t_sol(i,k) = toc; 
+    e_sol(i,k) = norm(y-sol); 
+    e_fact(i,k) = norm(A'*A-R'*R); 
     k = k + 1;
     
     tic;
     R = chol(A'*A); 
-    y = R'\(A'*b);
-    x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
-    e_fact(i,k) = norm(A'*A-R'*R);
+    t = R'\c;
+    z = R\t;
+    y = A*z;
+    t_sol(i,k) = toc; 
+    e_sol(i,k) = norm(y-sol); 
+    e_fact(i,k) = norm(A'*A-R'*R); 
     k = k + 1;
     
     i = i+1;
@@ -704,25 +713,32 @@ semilogy(dimensions, t_sol); title("tempi di risoluzione");
 legend('mychol','chol');
 
 figure(4); 
-semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact); title("errori di fattorizzazione");
 legend('mychol','chol');
 
 figure(5); 
 plot(dimensions, n_cond); title("numero di condizionamento");
 
 
-
-
 % ********************************************************************** %
-% TEST 3.2: differenza tra qr con matrici rettangolari orizzontali.
+% TEST 3.2: differenza tra qr con matrici rettangolari orizzontali. 
+% Sistema visto come A'y = c, con A mxn m>n. Tra le infinite soluzioni,  
+% prendo quella di minima norma.
+% Sia il sistema A'y = c, la risoluzione è data dal sistema:
+% | A'Az = c
+% | y = Az
+% come prima cosa fattorizzo A'A = Q*R, ottenendo: Q*R*z = c, quindi,
+% chiamando t = R*z, ottengo il sistema:
+% | Q*t = c  ; | t = Q'*c
+% | R*z = t    | z = R\t
+% dopodiché trovo la soluzione y come y = A*z
 % ********************************************************************** %
-% tra le infinite soluzioni, prendo quella di minima norma
 
 clear variables;
 
 i = 1;
 
-dimensions = 200:30:480;
+dimensions = 300:20:500;
 
 t_sol  = zeros(length(dimensions),2);
 e_sol  = zeros(length(dimensions),2);
@@ -733,7 +749,7 @@ n_cond = zeros(length(dimensions),1);
 for n = dimensions
     fprintf('n: %d\n',n);
     
-    m = 500;
+    m = 510;
 	A = rand(m,n);
     n_cond(i) = cond(A);
     
@@ -745,8 +761,8 @@ for n = dimensions
     
     tic;
     [Q, R] = myqr(A'*A, 'householder-light'); 
-    yy = Q'*c;
-    z = R\yy;
+    t = Q'*c;
+    z = R\t;
     y = A*z;
     t_sol(i,k) = toc; 
     e_sol(i,k) = norm(y-sol); 
@@ -756,8 +772,8 @@ for n = dimensions
     
     tic;
     [Q, R] = qr(A'*A); 
-    yy = Q'*c;
-    z = R\yy;
+    t = Q'*c;
+    z = R\t;
     y = A*z;
     t_sol(i,k) = toc; 
     e_sol(i,k) = norm(y-sol); 
@@ -782,13 +798,11 @@ semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
 legend('householder-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_sol); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact); title("errori di fattorizzazione");
 legend('householder-light','qr');
 
 figure(5); 
 plot(dimensions, n_cond); title("numero di condizionamento");
-
-% RISULTATI DA STUDIARE. errori di soluzione altissimissimi
 
 
 % ********************************************************************** %
