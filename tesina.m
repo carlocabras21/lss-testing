@@ -5,7 +5,7 @@
 %     - per ogni algoritmo mio e confronto con MATLAB
 %        - tempi di calcolo
 %        - condizionamento
-%        - norma della differenza con la soluzione vera
+%        - errori relativi: norm(x-sol)/norm(sol)
 % usare pseudoinversa
 % 
 
