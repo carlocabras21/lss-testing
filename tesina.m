@@ -40,6 +40,7 @@ for n = dimensions
     n_cond(i) = cond(A);
     
     sol = ones(n,1);
+    norm_sol = norm(sol);
     b = A*sol;
     
     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
@@ -49,7 +50,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k)  = toc;
-    e_sol(i,k)  = norm(x-sol);
+    e_sol(i,k)  = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(n));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
@@ -59,7 +60,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(n));
     e_fact(i,k) = norm(A-Q*R);
     k = k+1;
@@ -69,7 +70,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(n));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
@@ -79,7 +80,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(n));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
@@ -89,7 +90,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(n));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
@@ -104,7 +105,7 @@ for n = dimensions
     y = R'\(A'*b);
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_fact(i,k) = norm(A'*A-R'*R);
     k = k + 1;
 
@@ -113,7 +114,7 @@ for n = dimensions
     y = R'\(A'*b);
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_fact(i,k) = norm(A'*A-R'*R);
     k = k + 1;
     
@@ -122,7 +123,7 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione");
+semilogy(dimensions, e_sol); title("errori di soluzione relativi");
 legend('householder','householder-light','givens','givens-light','qr','mychol','chol');
 
 figure(2); 
@@ -167,6 +168,7 @@ for n = dimensions
     n_cond(i) = cond(A);
     
     sol = ones(n,1);
+    norm_sol = norm(sol);
     b = A*sol;
     
     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
@@ -177,7 +179,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(n));
     e_fact(i,k) = norm(A-Q*R);
     k = k+1;
@@ -187,7 +189,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(n));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
@@ -197,7 +199,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(n));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
@@ -207,7 +209,7 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione");
+semilogy(dimensions, e_sol); title("errori di soluzione relativi");
 legend('householder-light','givens-light','qr');
 
 figure(2); 
@@ -250,6 +252,7 @@ for n = dimensions
     n_cond(i) = cond(A);
     
     sol = ones(n,1);
+    norm_sol = norm(sol);
     b = A*sol;
     
     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
@@ -260,7 +263,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(n));
     e_fact(i,k) = norm(A-Q*R);
     k = k+1;
@@ -270,7 +273,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(n));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
@@ -280,7 +283,7 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione");
+semilogy(dimensions, e_sol); title("errori di soluzione relativi");
 legend('householder-light','qr');
 
 figure(2); 
@@ -334,6 +337,7 @@ for n = dimensions
     n_cond(i) = cond(A);
     
     sol = ones(dim,1);
+    norm_sol = norm(sol);
     b = A*sol;
     
     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
@@ -344,7 +348,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(dim));
     e_fact(i,k) = norm(A-Q*R);
     k = k+1;
@@ -354,7 +358,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(dim));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
@@ -364,7 +368,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(dim));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
@@ -374,7 +378,7 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione");
+semilogy(dimensions, e_sol); title("errori di soluzione relativi");
 legend('householder-light','givens-light','qr');
 
 figure(2); 
@@ -421,6 +425,7 @@ for n = dimensions
     n_cond(i) = cond(A);
     
     sol = ones(n,1);
+    norm_sol = norm(sol);
     b = A*sol;
     
     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
@@ -431,7 +436,7 @@ for n = dimensions
     y = R'\(A'*b);
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_fact(i,k) = norm(A'*A-R'*R);
     k = k + 1;
     
@@ -440,7 +445,7 @@ for n = dimensions
     y = R'\(A'*b);
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_fact(i,k) = norm(A'*A-R'*R);
     k = k + 1;
     i = i+1;
@@ -448,7 +453,7 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione");
+semilogy(dimensions, e_sol); title("errori di soluzione relativi");
 legend('mychol','chol');
 
 figure(2); 
@@ -490,6 +495,7 @@ for n = dimensions
     n_cond(i) = cond(A);
     
     sol = ones(n,1);
+    norm_sol = norm(sol);
     b = A*sol;
     
     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
@@ -500,7 +506,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(m));
     e_fact(i,k) = norm(A-Q*R);
     k = k+1;
@@ -510,7 +516,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(m));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
@@ -520,7 +526,7 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione");
+semilogy(dimensions, e_sol); title("errori di soluzione relativi");
 legend('householder-light','qr');
 
 figure(2); 
@@ -571,6 +577,7 @@ for n = dimensions
     n_cond(i) = cond(A);
     
     sol = ones(dim_n,1);
+    norm_sol = norm(sol);
     b = A*sol;
     
     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
@@ -581,7 +588,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(dim_m));
     e_fact(i,k) = norm(A-Q*R);
     k = k+1;
@@ -591,7 +598,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(dim_m));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
@@ -601,7 +608,7 @@ for n = dimensions
     y = Q'*b;
     x = R\y;
     t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol);
+    e_sol(i,k) = norm(x-sol)/norm_sol;
     e_orth(i,k) = norm(Q*Q'-eye(dim_m));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
@@ -611,7 +618,7 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione");
+semilogy(dimensions, e_sol); title("errori di soluzione relativi");
 legend('householder-light','givens-light','qr');
 
 figure(2); 
@@ -660,7 +667,7 @@ clear variables;
 
 i = 1;
 
-dimensions = 30:10:90;
+dimensions = 30:10:50;
 
 t_sol  = zeros(length(dimensions),2);
 e_sol  = zeros(length(dimensions),2);
@@ -670,11 +677,12 @@ n_cond = zeros(length(dimensions),1);
 for n = dimensions
     fprintf('n: %d\n',n);
     
-    m = 100;
+    m = 120;
 	A = rand(m,n);
     n_cond(i) = cond(A);
     
-    sol = ones(m,1);
+    sol = ones(m,1)*20;
+    norm_sol = norm(sol);
     c = A'*sol;
     
     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
@@ -686,7 +694,7 @@ for n = dimensions
     z = R\t;
     y = A*z;
     t_sol(i,k) = toc; 
-    e_sol(i,k) = norm(y-sol); 
+    e_sol(i,k) = norm(y-sol)/norm_sol; 
     e_fact(i,k) = norm(A'*A-R'*R); 
     k = k + 1;
     
@@ -696,7 +704,7 @@ for n = dimensions
     z = R\t;
     y = A*z;
     t_sol(i,k) = toc; 
-    e_sol(i,k) = norm(y-sol); 
+    e_sol(i,k) = norm(y-sol)/norm_sol; 
     e_fact(i,k) = norm(A'*A-R'*R); 
     k = k + 1;
     
@@ -705,7 +713,7 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione");
+semilogy(dimensions, e_sol); title("errori di soluzione relativi");
 legend('mychol','chol');
 
 figure(2); 
@@ -754,6 +762,7 @@ for n = dimensions
     n_cond(i) = cond(A);
     
     sol = ones(m,1);
+    norm_sol = norm(sol);
     c = A'*sol;
     
     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
@@ -765,7 +774,7 @@ for n = dimensions
     z = R\t;
     y = A*z;
     t_sol(i,k) = toc; 
-    e_sol(i,k) = norm(y-sol); 
+    e_sol(i,k) = norm(y-sol)/norm_sol; 
     e_fact(i,k) = norm(A'*A-Q*R); 
     e_orth(i,k) = norm(Q*Q'-eye(n)); 
     k = k + 1;
@@ -776,7 +785,7 @@ for n = dimensions
     z = R\t;
     y = A*z;
     t_sol(i,k) = toc; 
-    e_sol(i,k) = norm(y-sol); 
+    e_sol(i,k) = norm(y-sol)/norm_sol; 
     e_fact(i,k) = norm(A'*A-Q*R); 
     e_orth(i,k) = norm(Q*Q'-eye(n)); 
     k = k + 1;
@@ -786,7 +795,7 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione");
+semilogy(dimensions, e_sol); title("errori di soluzione relativi");
 legend('householder-light','qr');
 
 figure(2); 
