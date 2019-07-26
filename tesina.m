@@ -8,6 +8,7 @@
 %        - errori relativi: norm(x-sol)/norm(sol)
 % usare pseudoinversa
 % 
+% testare backslash
 
 % IMPORTANTE: lanciare i test uno alla volta per evitare blocchi
 
@@ -27,8 +28,8 @@ i = 1;
 
 dimensions = 50:10:100;
 
-t_sol  = zeros(length(dimensions),7);
-e_sol  = zeros(length(dimensions),7);
+t_sol  = zeros(length(dimensions),8);
+e_sol  = zeros(length(dimensions),8);
 e_fact = zeros(length(dimensions),7);
 e_orth = zeros(length(dimensions),5);
 n_cond = zeros(length(dimensions),1);
@@ -118,17 +119,25 @@ for n = dimensions
     e_fact(i,k) = norm(A'*A-R'*R);
     k = k + 1;
     
+    
+    tic;
+    x = A\b;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
+    
+    
     i = i+1;
 
 end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('householder','householder-light','givens','givens-light','qr','mychol','chol');
+legend('householder','householder-light','givens','givens-light','qr','mychol','chol','backslash');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('householder','householder-light','givens','givens-light','qr','mychol','chol');
+legend('householder','householder-light','givens','givens-light','qr','mychol','chol','backslash');
 
 figure(3); 
 semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
@@ -155,8 +164,8 @@ i = 1;
 
 dimensions = 50:50:500;
 
-t_sol  = zeros(length(dimensions),3);
-e_sol  = zeros(length(dimensions),3);
+t_sol  = zeros(length(dimensions),4);
+e_sol  = zeros(length(dimensions),4);
 e_orth = zeros(length(dimensions),3);
 e_fact = zeros(length(dimensions),3);
 n_cond = zeros(length(dimensions),1);
@@ -204,17 +213,23 @@ for n = dimensions
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
     
+    tic;
+    x = A\b;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
+    
     i = i+1;
 
 end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('householder-light','givens-light','qr');
+legend('householder-light','givens-light','qr','backslash');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('householder-light','givens-light','qr');
+legend('householder-light','givens-light','qr','backslash');
 
 figure(3); 
 semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
@@ -233,73 +248,75 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 % n grandi. A matrice quadrata nxn
 % ********************************************************************** %
 
-clear variables;
+% * * * * DA DECIDERE SE NECESSARIO * * * * 
 
-i = 1;
-
-dimensions = 1000:500:1500;
-
-t_sol  = zeros(length(dimensions),2);
-e_sol  = zeros(length(dimensions),2);
-e_orth = zeros(length(dimensions),2);
-e_fact = zeros(length(dimensions),2);
-n_cond = zeros(length(dimensions),1);
-
-for n = dimensions
-    fprintf('n: %d\n',n);
-    
-	A = rand(n,n);
-    n_cond(i) = cond(A);
-    
-    sol = ones(n,1);
-    norm_sol = norm(sol);
-    b = A*sol;
-    
-    k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
-           % tenere conto di quanti algoritmi sto testando
-    
-    tic;
-    [Q,R] = myqr(A, "householder-light");
-    y = Q'*b;
-    x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(n));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k+1;
-
-    tic;
-    [Q,R] = qr(A);
-    y = Q'*b;
-    x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(n));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k + 1;
-    
-    i = i+1;
-
-end
-
-figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('householder-light','qr');
-
-figure(2); 
-semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('householder-light','qr');
-
-figure(3); 
-semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
-legend('householder-light','qr');
-
-figure(4); 
-semilogy(dimensions, e_fact); title("errori di fattorizzazione");
-legend('householder-light','qr');
-
-figure(5); 
-plot(dimensions, n_cond); title("numero di condizionamento");
+% clear variables;
+% 
+% i = 1;
+% 
+% dimensions = 1000:500:1500;
+% 
+% t_sol  = zeros(length(dimensions),2);
+% e_sol  = zeros(length(dimensions),2);
+% e_orth = zeros(length(dimensions),2);
+% e_fact = zeros(length(dimensions),2);
+% n_cond = zeros(length(dimensions),1);
+% 
+% for n = dimensions
+%     fprintf('n: %d\n',n);
+%     
+% 	A = rand(n,n);
+%     n_cond(i) = cond(A);
+%     
+%     sol = ones(n,1);
+%     norm_sol = norm(sol);
+%     b = A*sol;
+%     
+%     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
+%            % tenere conto di quanti algoritmi sto testando
+%     
+%     tic;
+%     [Q,R] = myqr(A, "householder-light");
+%     y = Q'*b;
+%     x = R\y;
+%     t_sol(i,k) = toc;
+%     e_sol(i,k) = norm(x-sol)/norm_sol;
+%     e_orth(i,k) = norm(Q*Q'-eye(n));
+%     e_fact(i,k) = norm(A-Q*R);
+%     k = k+1;
+% 
+%     tic;
+%     [Q,R] = qr(A);
+%     y = Q'*b;
+%     x = R\y;
+%     t_sol(i,k) = toc;
+%     e_sol(i,k) = norm(x-sol)/norm_sol;
+%     e_orth(i,k) = norm(Q*Q'-eye(n));
+%     e_fact(i,k) = norm(A-Q*R);
+%     k = k + 1;
+%     
+%     i = i+1;
+% 
+% end
+% 
+% figure(1); 
+% semilogy(dimensions, e_sol); title("errori di soluzione relativi");
+% legend('householder-light','qr');
+% 
+% figure(2); 
+% semilogy(dimensions, t_sol); title("tempi di risoluzione");
+% legend('householder-light','qr');
+% 
+% figure(3); 
+% semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+% legend('householder-light','qr');
+% 
+% figure(4); 
+% semilogy(dimensions, e_fact); title("errori di fattorizzazione");
+% legend('householder-light','qr');
+% 
+% figure(5); 
+% plot(dimensions, n_cond); title("numero di condizionamento");
 
 % ********************************************************************** %
 % TEST 1.4: matrice triangolare superiore con diagonali in più
@@ -318,8 +335,8 @@ i = 1;
 
 dimensions = 4:2:20;
 
-t_sol  = zeros(length(dimensions),3);
-e_sol  = zeros(length(dimensions),3);
+t_sol  = zeros(length(dimensions),4);
+e_sol  = zeros(length(dimensions),4);
 e_orth = zeros(length(dimensions),3);
 e_fact = zeros(length(dimensions),3);
 n_cond = zeros(length(dimensions),1);
@@ -373,17 +390,22 @@ for n = dimensions
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
     
+    tic;
+    x = A\b;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
     i = i+1;
 
 end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('householder-light','givens-light','qr');
+legend('householder-light','givens-light','qr','backslash');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('householder-light','givens-light','qr');
+legend('householder-light','givens-light','qr','backslash');
 
 figure(3); 
 semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
@@ -406,7 +428,7 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 % ********************************************************************** %
 % TEST 2.1: Equazioni normali. A m x n con m > n, sitema Ax = b impostato 
 % come A'Ax = A'b.
-% differenza tra Cholesky mio, quello di Matlab e pseudoinversa.
+% differenza tra Cholesky mio, quello di Matlab e pseudoinversa. e \.
 % ********************************************************************** %
 
 clear variables;
@@ -415,8 +437,8 @@ i = 1;
 
 dimensions = 10:10:100;
 
-t_sol = zeros(length(dimensions),3);
-e_sol = zeros(length(dimensions),3);
+t_sol = zeros(length(dimensions),4);
+e_sol = zeros(length(dimensions),4);
 e_fact = zeros(length(dimensions),2);
 n_cond = zeros(length(dimensions),1);
 
@@ -457,16 +479,22 @@ for n = dimensions
     e_sol(i,k) = norm(x-sol)/norm_sol;
     k = k + 1;
     
+    tic;
+    x = A\b;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
+    
     i = i+1;
 end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('mychol','chol','pinv');
+legend('mychol','chol','pinv','backslash');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('mychol','chol','pinv');
+legend('mychol','chol','pinv','backslash');
 
 figure(4); 
 semilogy(dimensions, e_fact); title("errori di fattorizzazione");
@@ -489,8 +517,8 @@ i = 1;
 
 dimensions = 100:100:500;
 
-t_sol  = zeros(length(dimensions),3);
-e_sol  = zeros(length(dimensions),3);
+t_sol  = zeros(length(dimensions),4);
+e_sol  = zeros(length(dimensions),4);
 e_orth = zeros(length(dimensions),2);
 e_fact = zeros(length(dimensions),2);
 n_cond = zeros(length(dimensions),1);
@@ -534,18 +562,24 @@ for n = dimensions
     t_sol(i,k) = toc;
     e_sol(i,k) = norm(x-sol)/norm_sol;
     k = k + 1;
-    
+        
+    tic;
+    x = A\b;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
+        
     i = i+1;
 
 end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('householder-light','qr','pinv');
+legend('householder-light','qr','pinv','backslash');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('householder-light','qr','pinv');
+legend('householder-light','qr','pinv','backslash');
 
 figure(3); 
 semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
@@ -571,8 +605,8 @@ i = 1;
 
 dimensions = 4:2:20;
 
-t_sol  = zeros(length(dimensions),4);
-e_sol  = zeros(length(dimensions),4);
+t_sol  = zeros(length(dimensions),5);
+e_sol  = zeros(length(dimensions),5);
 e_orth = zeros(length(dimensions),3);
 e_fact = zeros(length(dimensions),3);
 n_cond = zeros(length(dimensions),1);
@@ -632,18 +666,24 @@ for n = dimensions
     t_sol(i,k) = toc;
     e_sol(i,k) = norm(x-sol)/norm_sol;
     k = k + 1;
-        
+     
+    tic;
+    x = A\b;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
+               
     i = i+1;
 
 end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('householder-light','givens-light','qr','pinv');
+legend('householder-light','givens-light','qr','pinv','backslash');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('householder-light','givens-light','qr','pinv');
+legend('householder-light','givens-light','qr','pinv','backslash');
 
 figure(3); 
 semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
@@ -687,8 +727,8 @@ i = 1;
 
 dimensions = 30:10:110;
 
-t_sol  = zeros(length(dimensions),3);
-e_sol  = zeros(length(dimensions),3);
+t_sol  = zeros(length(dimensions),4);
+e_sol  = zeros(length(dimensions),4);
 e_fact = zeros(length(dimensions),2);
 n_cond = zeros(length(dimensions),1);
 
@@ -732,17 +772,24 @@ for n = dimensions
     e_sol(i,k) = norm(x-sol)/norm_sol;
     k = k + 1;
     
+    
+    tic;
+    x = A'\c;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
+    
     i = i+1;
 
 end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('mychol','chol','pinv');
+legend('mychol','chol','pinv','backslash');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('mychol','chol','pinv');
+legend('mychol','chol','pinv','backslash');
 
 figure(4); 
 semilogy(dimensions, e_fact); title("errori di fattorizzazione");
@@ -772,8 +819,8 @@ i = 1;
 
 dimensions = 300:20:500;
 
-t_sol  = zeros(length(dimensions),3);
-e_sol  = zeros(length(dimensions),3);
+t_sol  = zeros(length(dimensions),4);
+e_sol  = zeros(length(dimensions),4);
 e_fact = zeros(length(dimensions),2);
 e_orth = zeros(length(dimensions),2);
 n_cond = zeros(length(dimensions),1);
@@ -819,6 +866,12 @@ for n = dimensions
     t_sol(i,k) = toc;
     e_sol(i,k) = norm(x-sol)/norm_sol;
     k = k + 1;
+        
+    tic;
+    x = A'\c;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
     
     i = i+1;
 
@@ -826,11 +879,11 @@ end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('householder-light','qr','pinv');
+legend('householder-light','qr','pinv','backslash');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('householder-light','qr','pinv');
+legend('householder-light','qr','pinv','backslash');
 
 figure(3); 
 semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
