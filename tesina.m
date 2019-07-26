@@ -7,19 +7,21 @@
 %        - condizionamento
 %        - errori relativi: norm(x-sol)/norm(sol)
 % usare pseudoinversa
-% 
 % testare backslash
+%
+% matrici sparse? di Hilbert?
 
 % IMPORTANTE: lanciare i test uno alla volta per evitare blocchi
 
 % ********************************************************************** %
 % ********************************************************************** %
-% ***** PARTE 1: matrici quadrate
+% ***** PARTE 1: sistemi quadrati
 % ********************************************************************** %
 % ********************************************************************** %
 
 % ********************************************************************** %
-% TEST 1.1: confronto tra tutti gli algoritmi. A nxn, n max 100
+% TEST 1.1: confronto tra QR mio (fattorizzazione di householder e di
+% givens, con le loro versioni "light"), QR di Matlab e backslash.
 % ********************************************************************** %
 
 clear variables;
@@ -28,9 +30,9 @@ i = 1;
 
 dimensions = 50:10:100;
 
-t_sol  = zeros(length(dimensions),8);
-e_sol  = zeros(length(dimensions),8);
-e_fact = zeros(length(dimensions),7);
+t_sol  = zeros(length(dimensions),6);
+e_sol  = zeros(length(dimensions),6);
+e_fact = zeros(length(dimensions),5);
 e_orth = zeros(length(dimensions),5);
 n_cond = zeros(length(dimensions),1);
 
@@ -95,30 +97,6 @@ for n = dimensions
     e_orth(i,k) = norm(Q*Q'-eye(n));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
-
-        
-    % Cholesky con n >100 non funziona più, mi dice che la matrice deve
-    % essere definita positiva. Probabilmente è dovuto al fatto che A'*A è
-    % una matrice di ordine 10'000 e ci sono troppi errori
-    
-    tic;
-    R = mychol(A'*A);
-    y = R'\(A'*b);
-    x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_fact(i,k) = norm(A'*A-R'*R);
-    k = k + 1;
-
-    tic;
-    R = chol(A'*A);
-    y = R'\(A'*b);
-    x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_fact(i,k) = norm(A'*A-R'*R);
-    k = k + 1;
-    
     
     tic;
     x = A\b;
@@ -133,11 +111,11 @@ end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('householder','householder-light','givens','givens-light','qr','mychol','chol','backslash');
+legend('householder','householder-light','givens','givens-light','qr','backslash');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('householder','householder-light','givens','givens-light','qr','mychol','chol','backslash');
+legend('householder','householder-light','givens','givens-light','qr','backslash');
 
 figure(3); 
 semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
@@ -145,17 +123,15 @@ legend('householder','householder-light','givens','givens-light','qr');
 
 figure(4); 
 semilogy(dimensions, e_fact); title("errori di fattorizzazione");
-legend('householder','householder-light','givens','givens-light','qr','mychol','chol');
+legend('householder','householder-light','givens','givens-light','qr');
 
 figure(5); 
 plot(dimensions, n_cond); title("numero di condizionamento");
 
 
 % ********************************************************************** %
-% TEST 1.2: visto che Cholesky non funziona più per n >120, in questo
-% test non lo uso. Inoltre, visti i tempi più alti per Householder e
-% Givens, uso solo le loro versioni light. Così posso usare n più grandi.
-% A matrice quadrata nxn
+% TEST 1.2: Visti i tempi più alti per Householder e Givens, uso solo le
+% loro versioni light. Così posso usare n più grandi.
 % ********************************************************************** %
 
 clear variables;
@@ -249,6 +225,8 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 % ********************************************************************** %
 
 % * * * * DA DECIDERE SE NECESSARIO * * * * 
+% anzi, decidere se usare direttamente questo e bogare il precedente. Mi sa
+% che farò così.
 
 % clear variables;
 % 
@@ -318,11 +296,17 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 % figure(5); 
 % plot(dimensions, n_cond); title("numero di condizionamento");
 
+
+
 % ********************************************************************** %
 % TEST 1.4: matrice triangolare superiore con diagonali in più
 % dimensioni di A fissate a 500x500, cambia il numero delle sottodiagonali.
 % Confrontro tra Householder-light, Givens-light e qr di MATLAB.
 % ********************************************************************** %
+
+% mi aspetto che givens-light funziona meglio, visto che se un elemento è
+% già zero non calcolo nulla.
+
 % funziona male per matrici quasi triangolari, perché mi dà l'errore:
 % "Warning: Matrix is close to singular or badly scaled. Results may be 
 % inaccurate. RCOND =  6.550039e-22." quindi parto con 4 sottodiagonali.
@@ -421,14 +405,14 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 
 % ********************************************************************** %
 % ********************************************************************** %
-% ***** PARTE 2: matrici rettangolari verticali
+% ***** PARTE 2: sistemi sovradimensionati
 % ********************************************************************** %
 % ********************************************************************** %
 
 % ********************************************************************** %
 % TEST 2.1: Equazioni normali. A m x n con m > n, sitema Ax = b impostato 
 % come A'Ax = A'b.
-% differenza tra Cholesky mio, quello di Matlab e pseudoinversa. e \.
+% differenza tra Cholesky mio, chol di Matlab, pseudoinversa e \.
 % ********************************************************************** %
 
 clear variables;
@@ -508,7 +492,7 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 % TEST 2.2: differenza tra myqr e qr di MATLAB. A matrice rettangolare 
 % m x n con m > n.
 % Uso la mia versione di qr con householder-light, comparandola alla qr di
-% Matlab e alla pseudoinversa
+% Matlab, alla pseudoinversa ed al backslash.
 % ********************************************************************** %
 
 clear variables;
@@ -701,7 +685,7 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 
 % ********************************************************************** %
 % ********************************************************************** %
-% ***** PARTE 3: matrici rettangolari orizzontali
+% ***** PARTE 3: sistemi sottodimensionati
 % ********************************************************************** %
 % ********************************************************************** %
 
