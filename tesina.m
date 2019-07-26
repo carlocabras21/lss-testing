@@ -404,7 +404,9 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 % ********************************************************************** %
 
 % ********************************************************************** %
-% TEST 2.1: differenza tra Cholesky con matrici rettangolari verticali
+% TEST 2.1: Equazioni normali. A m x n con m > n, sitema Ax = b impostato 
+% come A'Ax = A'b.
+% differenza tra Cholesky mio, quello di Matlab e pseudoinversa.
 % ********************************************************************** %
 
 clear variables;
@@ -413,8 +415,8 @@ i = 1;
 
 dimensions = 10:10:100;
 
-t_sol = zeros(length(dimensions),2);
-e_sol = zeros(length(dimensions),2);
+t_sol = zeros(length(dimensions),3);
+e_sol = zeros(length(dimensions),3);
 e_fact = zeros(length(dimensions),2);
 n_cond = zeros(length(dimensions),1);
 
@@ -448,17 +450,23 @@ for n = dimensions
     e_sol(i,k) = norm(x-sol)/norm_sol;
     e_fact(i,k) = norm(A'*A-R'*R);
     k = k + 1;
+    
+    tic;
+    x = pinv(A)*b;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
+    
     i = i+1;
-
 end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('mychol','chol');
+legend('mychol','chol','pinv');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('mychol','chol');
+legend('mychol','chol','pinv');
 
 figure(4); 
 semilogy(dimensions, e_fact); title("errori di fattorizzazione");
@@ -471,18 +479,18 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 % ********************************************************************** %
 % TEST 2.2: differenza tra myqr e qr di MATLAB. A matrice rettangolare 
 % m x n con m > n.
-% ********************************************************************** %
 % Uso la mia versione di qr con householder-light, comparandola alla qr di
-% Matlab
+% Matlab e alla pseudoinversa
+% ********************************************************************** %
 
 clear variables;
 
 i = 1;
 
-dimensions = 1000:500:1500;
+dimensions = 100:100:500;
 
-t_sol  = zeros(length(dimensions),2);
-e_sol  = zeros(length(dimensions),2);
+t_sol  = zeros(length(dimensions),3);
+e_sol  = zeros(length(dimensions),3);
 e_orth = zeros(length(dimensions),2);
 e_fact = zeros(length(dimensions),2);
 n_cond = zeros(length(dimensions),1);
@@ -520,6 +528,12 @@ for n = dimensions
     e_orth(i,k) = norm(Q*Q'-eye(m));
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
+        
+    tic;
+    x = pinv(A)*b;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
     
     i = i+1;
 
@@ -527,11 +541,11 @@ end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('householder-light','qr');
+legend('householder-light','qr','pinv');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('householder-light','qr');
+legend('householder-light','qr','pinv');
 
 figure(3); 
 semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
@@ -547,8 +561,8 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 % ********************************************************************** %
 % TEST 2.3: matrice triangolare superiore con diagonali in più. Le
 % dimensioni di A  sono fissate a 800x300, cambia il numero delle 
-% sottodiagonali. Confrontro tra Householder-light, Givens-light e qr di
-% Matlab.
+% sottodiagonali. Confrontro tra Householder-light, Givens-light e qr e pinv
+% di Matlab.
 % ********************************************************************** %
 
 clear variables;
@@ -557,8 +571,8 @@ i = 1;
 
 dimensions = 4:2:20;
 
-t_sol  = zeros(length(dimensions),3);
-e_sol  = zeros(length(dimensions),3);
+t_sol  = zeros(length(dimensions),4);
+e_sol  = zeros(length(dimensions),4);
 e_orth = zeros(length(dimensions),3);
 e_fact = zeros(length(dimensions),3);
 n_cond = zeros(length(dimensions),1);
@@ -613,17 +627,23 @@ for n = dimensions
     e_fact(i,k) = norm(A-Q*R);
     k = k + 1;
     
+    tic;
+    x = pinv(A)*b;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
+        
     i = i+1;
 
 end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('householder-light','givens-light','qr');
+legend('householder-light','givens-light','qr','pinv');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('householder-light','givens-light','qr');
+legend('householder-light','givens-light','qr','pinv');
 
 figure(3); 
 semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
@@ -645,11 +665,9 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 % ********************************************************************** %
 % ********************************************************************** %
 
-% DA RIVEDERE COMPLETAMENTE. Qua si usano le equazioni normali di secondo
-% tipo, cosa che io non ho fatto manco per il cazzo.
-
 % ********************************************************************** %
-% TEST 3.1: differenza tra Cholesky con matrici rettangolari orizzontali.
+% TEST 3.1: : equazioni normali di 2° tipo
+% differenza tra Cholesky e pinv con matrici rettangolari orizzontali.
 % Sistema visto come A'y = c, con A mxn m>n. Tra le infinite soluzioni, 
 % prendo quella di minima norma.
 % Sia il sistema A'y = c, la risoluzione è data dal sistema:
@@ -667,10 +685,10 @@ clear variables;
 
 i = 1;
 
-dimensions = 30:10:50;
+dimensions = 30:10:110;
 
-t_sol  = zeros(length(dimensions),2);
-e_sol  = zeros(length(dimensions),2);
+t_sol  = zeros(length(dimensions),3);
+e_sol  = zeros(length(dimensions),3);
 e_fact = zeros(length(dimensions),2);
 n_cond = zeros(length(dimensions),1);
 
@@ -708,17 +726,23 @@ for n = dimensions
     e_fact(i,k) = norm(A'*A-R'*R); 
     k = k + 1;
     
+    tic;
+    x = pinv(A')*c;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
+    
     i = i+1;
 
 end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('mychol','chol');
+legend('mychol','chol','pinv');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('mychol','chol');
+legend('mychol','chol','pinv');
 
 figure(4); 
 semilogy(dimensions, e_fact); title("errori di fattorizzazione");
@@ -729,7 +753,7 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 
 
 % ********************************************************************** %
-% TEST 3.2: differenza tra qr con matrici rettangolari orizzontali. 
+% TEST 3.2: differenza tra qr e pinv con matrici rettangolari orizzontali. 
 % Sistema visto come A'y = c, con A mxn m>n. Tra le infinite soluzioni,  
 % prendo quella di minima norma.
 % Sia il sistema A'y = c, la risoluzione è data dal sistema:
@@ -748,8 +772,8 @@ i = 1;
 
 dimensions = 300:20:500;
 
-t_sol  = zeros(length(dimensions),2);
-e_sol  = zeros(length(dimensions),2);
+t_sol  = zeros(length(dimensions),3);
+e_sol  = zeros(length(dimensions),3);
 e_fact = zeros(length(dimensions),2);
 e_orth = zeros(length(dimensions),2);
 n_cond = zeros(length(dimensions),1);
@@ -789,6 +813,12 @@ for n = dimensions
     e_fact(i,k) = norm(A'*A-Q*R); 
     e_orth(i,k) = norm(Q*Q'-eye(n)); 
     k = k + 1;
+        
+    tic;
+    x = pinv(A')*c;
+    t_sol(i,k) = toc;
+    e_sol(i,k) = norm(x-sol)/norm_sol;
+    k = k + 1;
     
     i = i+1;
 
@@ -796,11 +826,11 @@ end
 
 figure(1); 
 semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-legend('householder-light','qr');
+legend('householder-light','qr','pinv');
 
 figure(2); 
 semilogy(dimensions, t_sol); title("tempi di risoluzione");
-legend('householder-light','qr');
+legend('householder-light','qr','pinv');
 
 figure(3); 
 semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
