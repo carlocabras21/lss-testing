@@ -9,7 +9,12 @@
 % usare pseudoinversa
 % testare backslash
 %
-% matrici sparse? di Hilbert?
+% matrici sparse? 
+% // FATTO: di Hilbert? sì: studiare sistemi malcondizionati e 
+% comportamento algoritmi
+
+% CONTROLLARE INDICE k: potrebbero esserci errori, visto che per certi
+% algoritmi calcolo certi errori e per altri non ne calcolo. DA RIVEDERE
 
 % IMPORTANTE: lanciare i test uno alla volta per evitare blocchi
 
@@ -880,10 +885,115 @@ legend('householder-light','qr');
 figure(5); 
 plot(dimensions, n_cond); title("numero di condizionamento");
 
+% ********************************************************************** %
+% ********************************************************************** %
+% ***** PARTE 4: sistemi malcondizionati
+% ********************************************************************** %
+% ********************************************************************** %
 
 % ********************************************************************** %
-% TEST
+% TEST 4.1 sistema sovradimensionato
 % ********************************************************************** %
+
+clear variables;
+
+i = 1;
+
+dimensions = 3:1:9;
+
+t_sol  = zeros(length(dimensions),6);
+e_sol  = zeros(length(dimensions),6);
+e_fact = zeros(length(dimensions),4);
+e_orth = zeros(length(dimensions),2);
+n_cond = zeros(length(dimensions),1);
+
+for n = dimensions
+    fprintf('n: %d\n',n);
+    
+    m=10;
+	A_start = hilb(m); % hilb crea una matrice quadrata
+    A = A_start(:,1:n);
+    n_cond(i) = cond(A);
+    
+    sol = ones(n,1);
+    norm_sol = norm(sol);
+    b = A*sol;
+    
+%     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
+           % tenere conto di quanti algoritmi sto testando
+    tic;
+    [Q,R] = myqr(A, "householder-light");
+    y = Q'*b;
+    x = R\y;
+    t_sol(i,1) = toc;
+    e_sol(i,1) = norm(x-sol)/norm_sol;
+    e_orth(i,1) = norm(Q*Q'-eye(m));
+    e_fact(i,1) = norm(A-Q*R);
+%     k = k+1;
+    
+    tic;
+    [Q,R] = qr(A);
+    y = Q'*b;
+    x = R\y;
+    t_sol(i,2) = toc;
+    e_sol(i,2) = norm(x-sol)/norm_sol;
+    e_orth(i,2) = norm(Q*Q'-eye(m));
+    e_fact(i,2) = norm(A-Q*R);
+%     k = k + 1;
+    
+
+    tic;
+    R = mychol(A'*A);
+    y = R'\(A'*b);
+    x = R\y;
+    t_sol(i,3) = toc;
+    e_sol(i,3) = norm(x-sol)/norm_sol;
+    e_fact(i,3) = norm(A'*A-R'*R);
+%     k = k + 1;
+    
+    tic;
+    R = chol(A'*A);
+    y = R'\(A'*b);
+    x = R\y;
+    t_sol(i,4) = toc;
+    e_sol(i,4) = norm(x-sol)/norm_sol;
+    e_fact(i,4) = norm(A'*A-R'*R);
+%     k = k + 1;
+    
+    tic;
+    x = pinv(A)*b;
+    t_sol(i,5) = toc;
+    e_sol(i,5) = norm(x-sol)/norm_sol;
+%     k = k + 1;
+    
+    tic;
+    x = A\b;
+    t_sol(i,6) = toc;
+    e_sol(i,6) = norm(x-sol)/norm_sol;
+%     k = k + 1;
+    
+    i = i+1;
+
+end
+
+figure(1); 
+semilogy(dimensions, e_sol); title("errori di soluzione relativi");
+legend('householder-light','qr','mychol','chol','pinv','backslash');
+
+figure(2); 
+semilogy(dimensions, t_sol); title("tempi di risoluzione");
+legend('householder-light','qr','mychol','chol','pinv','backslash');
+
+figure(3); 
+semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+legend('householder-light','qr');
+
+figure(4); 
+semilogy(dimensions, e_fact); title("errori di fattorizzazione");
+legend('householder-light','qr','mychol','chol');
+
+figure(5); 
+semilogy(dimensions, n_cond); title("numero di condizionamento");
 
 
 
