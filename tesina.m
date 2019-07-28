@@ -23,7 +23,7 @@ clear variables;
 
 i = 1;
 
-dimensions = 50:10:100;
+dimensions = 50:10:200;
 
 t_sol  = zeros(length(dimensions),6);
 e_sol  = zeros(length(dimensions),6);
@@ -97,6 +97,7 @@ for n = dimensions
 end
 
 figure(1); 
+subplot(3,2,1);
 semilogy(dimensions, e_sol(:,1), 'b', ...
          dimensions, e_sol(:,2), 'b--', ...
          dimensions, e_sol(:,3), 'r', ...
@@ -106,7 +107,7 @@ semilogy(dimensions, e_sol(:,1), 'b', ...
 title("errori di soluzione relativi");
 legend('householder','householder-light','givens','givens-light','qr','backslash');
 
-figure(2); 
+subplot(3,2,2);
 semilogy(dimensions, t_sol(:,1), 'b', ...
          dimensions, t_sol(:,2), 'b--', ...
          dimensions, t_sol(:,3), 'r', ...
@@ -116,8 +117,7 @@ semilogy(dimensions, t_sol(:,1), 'b', ...
 title("tempi di risoluzione");
 legend('householder','householder-light','givens','givens-light','qr','backslash');
 
-
-figure(3); 
+subplot(3,2,3);
 semilogy(dimensions, e_orth(:,1), 'b', ...
          dimensions, e_orth(:,2), 'b--', ...
          dimensions, e_orth(:,3), 'r', ...
@@ -126,7 +126,7 @@ semilogy(dimensions, e_orth(:,1), 'b', ...
 title("errori di ortogonalizzazione");
 legend('householder','householder-light','givens','givens-light','qr');
 
-figure(4); 
+subplot(3,2,4);
 semilogy(dimensions, e_fact(:,1), 'b', ...
          dimensions, e_fact(:,2), 'b--', ...
          dimensions, e_fact(:,3), 'r', ...
@@ -135,8 +135,11 @@ semilogy(dimensions, e_fact(:,1), 'b', ...
 title("errori di fattorizzazione");
 legend('householder','householder-light','givens','givens-light','qr');
 
-figure(5); 
+subplot(3,2,5);
 plot(dimensions, n_cond); title("numero di condizionamento");
+
+% print('plots/test_1_1','-dpng','-r0');
+% save('workspaces/test_1_1.mat');
 
 
 % ********************************************************************** %
@@ -148,7 +151,7 @@ clear variables;
 
 i = 1;
 
-dimensions = 50:50:300;
+dimensions = 50:50:500;
 
 t_sol  = zeros(length(dimensions),4);
 e_sol  = zeros(length(dimensions),4);
@@ -203,6 +206,7 @@ for n = dimensions
 end
 
 figure(1); 
+subplot(3,2,1);
 semilogy(dimensions, e_sol(:,1), 'b--', ...
          dimensions, e_sol(:,2), 'r--', ...
          dimensions, e_sol(:,3), 'g', ...
@@ -210,7 +214,7 @@ semilogy(dimensions, e_sol(:,1), 'b--', ...
 title("errori di soluzione relativi");
 legend('householder-light','givens-light','qr','backslash');
 
-figure(2); 
+subplot(3,2,2); 
 semilogy(dimensions, t_sol(:,1), 'b--', ...
          dimensions, t_sol(:,2), 'r--', ...
          dimensions, t_sol(:,3), 'g', ...
@@ -218,105 +222,29 @@ semilogy(dimensions, t_sol(:,1), 'b--', ...
 title("tempi di risoluzione");
 legend('householder-light','givens-light','qr','backslash');
 
-figure(3); 
+subplot(3,2,3);
 semilogy(dimensions, e_orth(:,1), 'b--', ...
          dimensions, e_orth(:,2), 'r--', ...
          dimensions, e_orth(:,3), 'g');
 title("errori di ortogonalizzazione");
 legend('householder-light','givens-light','qr');
 
-figure(4); 
+subplot(3,2,4);
 semilogy(dimensions, e_fact(:,1), 'b--', ...
          dimensions, e_fact(:,2), 'r--', ...
          dimensions, e_fact(:,3), 'g');
 title("errori di fattorizzazione");
 legend('householder-light','givens-light','qr');
 
-figure(5); 
+subplot(3,2,5); 
 plot(dimensions, n_cond); title("numero di condizionamento");
 
-
-% ********************************************************************** %
-% TEST 1.3: comparazione tra mio Householder-light e qr di MATLAB, con
-% n grandi. A matrice quadrata nxn
-% ********************************************************************** %
-
-% * * * * DA DECIDERE SE NECESSARIO * * * * 
-% anzi, decidere se usare direttamente questo e bogare il precedente. Mi sa
-% che farò così.
-
-% clear variables;
-% 
-% i = 1;
-% 
-% dimensions = 1000:500:1500;
-% 
-% t_sol  = zeros(length(dimensions),2);
-% e_sol  = zeros(length(dimensions),2);
-% e_orth = zeros(length(dimensions),2);
-% e_fact = zeros(length(dimensions),2);
-% n_cond = zeros(length(dimensions),1);
-% 
-% for n = dimensions
-%     fprintf('n: %d\n',n);
-%     
-% 	A = rand(n,n);
-%     n_cond(i) = cond(A);
-%     
-%     sol = ones(n,1);
-%     norm_sol = norm(sol);
-%     b = A*sol;
-%     
-%     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
-%            % tenere conto di quanti algoritmi sto testando
-%     
-%     tic;
-%     [Q,R] = myqr(A, "householder-light");
-%     y = Q'*b;
-%     x = R\y;
-%     t_sol(i,k) = toc;
-%     e_sol(i,k) = norm(x-sol)/norm_sol;
-%     e_orth(i,k) = norm(Q*Q'-eye(n));
-%     e_fact(i,k) = norm(A-Q*R);
-%     k = k+1;
-% 
-%     tic;
-%     [Q,R] = qr(A);
-%     y = Q'*b;
-%     x = R\y;
-%     t_sol(i,k) = toc;
-%     e_sol(i,k) = norm(x-sol)/norm_sol;
-%     e_orth(i,k) = norm(Q*Q'-eye(n));
-%     e_fact(i,k) = norm(A-Q*R);
-%     k = k + 1;
-%     
-%     i = i+1;
-% 
-% end
-% 
-% figure(1); 
-% semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-% legend('householder-light','qr');
-% 
-% figure(2); 
-% semilogy(dimensions, t_sol); title("tempi di risoluzione");
-% legend('householder-light','qr');
-% 
-% figure(3); 
-% semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
-% legend('householder-light','qr');
-% 
-% figure(4); 
-% semilogy(dimensions, e_fact); title("errori di fattorizzazione");
-% legend('householder-light','qr');
-% 
-% figure(5); 
-% plot(dimensions, n_cond); title("numero di condizionamento");
-
+% print('plots/test_1_2','-dpng','-r0');
+% save('workspaces/test_1_2.mat');
 
 
 % ********************************************************************** %
-% TEST 1.4: matrice triangolare superiore con diagonali in più
+% TEST 1.3: matrice triangolare superiore con diagonali in più
 % dimensioni di A fissate a 500x500, cambia il numero delle sottodiagonali.
 % Confrontro tra Householder-light, Givens-light e qr di MATLAB.
 % ********************************************************************** %
@@ -345,7 +273,7 @@ n_cond = zeros(length(dimensions),1);
 for n = dimensions
     fprintf('sottodiagonali: %d\n',n);
     
-    dim = 300;
+    dim = 100;
 	A = rand(dim,dim);
     for j = 1:dim
         for k = j+n+1:dim
@@ -393,7 +321,9 @@ for n = dimensions
     i = i+1;
 
 end
-figure(1); 
+
+figure(1);
+subplot(3,2,1);
 semilogy(dimensions, e_sol(:,1), 'b--', ...
          dimensions, e_sol(:,2), 'r--', ...
          dimensions, e_sol(:,3), 'g', ...
@@ -401,7 +331,7 @@ semilogy(dimensions, e_sol(:,1), 'b--', ...
 title("errori di soluzione relativi");
 legend('householder-light','givens-light','qr','backslash');
 
-figure(2); 
+subplot(3,2,2);
 semilogy(dimensions, t_sol(:,1), 'b--', ...
          dimensions, t_sol(:,2), 'r--', ...
          dimensions, t_sol(:,3), 'g', ...
@@ -409,22 +339,27 @@ semilogy(dimensions, t_sol(:,1), 'b--', ...
 title("tempi di risoluzione");
 legend('householder-light','givens-light','qr','backslash');
 
-figure(3); 
+subplot(3,2,3);
 semilogy(dimensions, e_orth(:,1), 'b--', ...
          dimensions, e_orth(:,2), 'r--', ...
          dimensions, e_orth(:,3), 'g');
 title("errori di ortogonalizzazione");
 legend('householder-light','givens-light','qr');
 
-figure(4); 
+subplot(3,2,4); 
 semilogy(dimensions, e_fact(:,1), 'b--', ...
          dimensions, e_fact(:,2), 'r--', ...
          dimensions, e_fact(:,3), 'g');
 title("errori di fattorizzazione");
 legend('householder-light','givens-light','qr');
 
-figure(5); 
+subplot(3,2,5); 
 plot(dimensions, n_cond); title("numero di condizionamento");
+
+% print('plots/test_1_3','-dpng','-r0');
+% save('workspaces/test_1_3.mat');
+
+
 
 % ********************************************************************** %
 % ********************************************************************** %
@@ -488,9 +423,9 @@ for n = dimensions
     i = i+1;
 end
 
-% mychol, chol, pinv, backslash
 
 figure(1); 
+subplot(2,2,1); 
 semilogy(dimensions, e_sol(:,1), 'm', ...
          dimensions, e_sol(:,2), 'm--', ...
          dimensions, e_sol(:,3), 'g:', ...
@@ -498,7 +433,7 @@ semilogy(dimensions, e_sol(:,1), 'm', ...
 title("errori di soluzione relativi");
 legend('mychol','chol','pinv','backslash');
 
-figure(2); 
+subplot(2,2,2); 
 semilogy(dimensions, t_sol(:,1), 'm', ...
          dimensions, t_sol(:,2), 'm--', ...
          dimensions, t_sol(:,3), 'g:', ...
@@ -506,15 +441,17 @@ semilogy(dimensions, t_sol(:,1), 'm', ...
 title("tempi di risoluzione");
 legend('mychol','chol','pinv','backslash');
 
-figure(4); 
+subplot(2,2,3);  
 semilogy(dimensions, e_fact(:,1), 'm', ...
          dimensions, e_fact(:,2), 'm--');
 title("errori di fattorizzazione");
 legend('mychol','chol');
 
-figure(5); 
+subplot(2,2,4); 
 plot(dimensions, n_cond); title("numero di condizionamento");
 
+% print('plots/test_2_1','-dpng','-r0');
+% save('workspaces/test_2_1.mat');
 
 % ********************************************************************** %
 % TEST 2.2: differenza tra myqr e qr di MATLAB. A matrice rettangolare 
@@ -527,7 +464,7 @@ clear variables;
 
 i = 1;
 
-dimensions = 50:50:200;
+dimensions = 300:25:475;
 
 t_sol  = zeros(length(dimensions),4);
 e_sol  = zeros(length(dimensions),4);
@@ -538,7 +475,7 @@ n_cond = zeros(length(dimensions),1);
 for n = dimensions
     fprintf('n: %d\n',n);
     
-    m = 250;
+    m = 500;
 	A = rand(m,n);
     n_cond(i) = cond(A);
     
@@ -565,11 +502,6 @@ for n = dimensions
     e_fact(i,2) = norm(A-Q*R);
         
     tic;
-    x = pinv(A)*b;
-    t_sol(i,3) = toc;
-    e_sol(i,3) = norm(x-sol)/norm_sol;
-        
-    tic;
     x = A\b;
     t_sol(i,4) = toc;
     e_sol(i,4) = norm(x-sol)/norm_sol;
@@ -579,149 +511,37 @@ for n = dimensions
 end
 
 figure(1); 
+subplot(3,2,1);
 semilogy(dimensions, e_sol(:,1), 'b--', ...
          dimensions, e_sol(:,2), 'g', ...
-         dimensions, e_sol(:,3), 'g:', ...
-         dimensions, e_sol(:,4), 'g--');
+         dimensions, e_sol(:,3), 'g--');
 title("errori di soluzione relativi");
-legend('householder-light','qr','pinv','backslash');
+legend('householder-light','qr','backslash');
 
-figure(2); 
+subplot(3,2,2);
 semilogy(dimensions, t_sol(:,1), 'b--', ...
          dimensions, t_sol(:,2), 'g', ...
-         dimensions, t_sol(:,3), 'g:', ...
-         dimensions, t_sol(:,4), 'g--');
+         dimensions, t_sol(:,3), 'g--');
 title("tempi di risoluzione");
-legend('householder-light','qr','pinv','backslash');
+legend('householder-light','qr','backslash');
 
-figure(3); 
+subplot(3,2,3); 
 semilogy(dimensions, e_orth(:,1), 'b--', ...
          dimensions, e_orth(:,2), 'g');
 title("errori di ortogonalizzazione");
 legend('householder-light','qr');
 
-figure(4); 
+subplot(3,2,4); 
 semilogy(dimensions, e_fact(:,1), 'b--', ...
          dimensions, e_fact(:,2), 'g');
 title("errori di fattorizzazione");
 legend('householder-light','qr');
 
-figure(5); 
+subplot(3,2,5);
 plot(dimensions, n_cond); title("numero di condizionamento");
 
-% ********************************************************************** %
-% TEST 2.3: matrice triangolare superiore con diagonali in più. Le
-% dimensioni di A  sono fissate a 800x300, cambia il numero delle 
-% sottodiagonali. Confrontro tra Householder-light, Givens-light e qr e pinv
-% di Matlab.
-% ********************************************************************** %
-
-clear variables;
-
-i = 1;
-
-dimensions = 4:2:20;
-
-t_sol  = zeros(length(dimensions),5);
-e_sol  = zeros(length(dimensions),5);
-e_orth = zeros(length(dimensions),3);
-e_fact = zeros(length(dimensions),3);
-n_cond = zeros(length(dimensions),1);
-
-for n = dimensions
-    fprintf('sottodiagonali: %d\n',n);
-    
-    dim_m = 150;
-    dim_n = 100;
-	A = rand(dim_m,dim_n);
-    for j = 1:dim_n
-        for k = j+n+1:dim_n
-            A(k,j) = 0;
-        end
-    end
-    n_cond(i) = cond(A);
-    
-    sol = ones(dim_n,1);
-    norm_sol = norm(sol);
-    b = A*sol;
-
-    tic;
-    [Q,R] = myqr(A, "householder-light");
-    y = Q'*b;
-    x = R\y;
-    t_sol(i,1) = toc;
-    e_sol(i,1) = norm(x-sol)/norm_sol;
-    e_orth(i,1) = norm(Q*Q'-eye(dim_m));
-    e_fact(i,1) = norm(A-Q*R);
-    
-    tic;
-    [Q,R] = myqr(A, "givens-light");
-    y = Q'*b;
-    x = R\y;
-    t_sol(i,2) = toc;
-    e_sol(i,2) = norm(x-sol)/norm_sol;
-    e_orth(i,2) = norm(Q*Q'-eye(dim_m));
-    e_fact(i,2) = norm(A-Q*R);
-    
-    tic;
-    [Q,R] = qr(A);
-    y = Q'*b;
-    x = R\y;
-    t_sol(i,3) = toc;
-    e_sol(i,3) = norm(x-sol)/norm_sol;
-    e_orth(i,3) = norm(Q*Q'-eye(dim_m));
-    e_fact(i,3) = norm(A-Q*R);
-    
-    tic;
-    x = pinv(A)*b;
-    t_sol(i,4) = toc;
-    e_sol(i,4) = norm(x-sol)/norm_sol;
-     
-    tic;
-    x = A\b;
-    t_sol(i,5) = toc;
-    e_sol(i,5) = norm(x-sol)/norm_sol;
-    
-    i = i+1;
-
-end
-
-figure(1); 
-semilogy(dimensions, e_sol(:,1), 'b--', ...
-         dimensions, e_sol(:,2), 'r--', ...
-         dimensions, e_sol(:,3), 'g', ...
-         dimensions, e_sol(:,4), 'g:', ...
-         dimensions, e_sol(:,5), 'g--');
-title("errori di soluzione relativi");
-legend('householder-light','givens-light','qr','pinv','backslash');
-
-figure(2); 
-semilogy(dimensions, t_sol(:,1), 'b--', ...
-         dimensions, t_sol(:,2), 'r--', ...
-         dimensions, t_sol(:,3), 'g', ...
-         dimensions, t_sol(:,4), 'g:', ...
-         dimensions, t_sol(:,5), 'g--');
-title("tempi di risoluzione");
-legend('householder-light','givens-light','qr','pinv','backslash');
-
-figure(3); 
-semilogy(dimensions, e_orth(:,1), 'b--', ...
-         dimensions, e_orth(:,2), 'r--', ...
-         dimensions, e_orth(:,3), 'g');
-title("errori di ortogonalizzazione");
-legend('householder-light','givens-light','qr');
-
-figure(4); 
-semilogy(dimensions, e_fact(:,1), 'b--', ...
-         dimensions, e_fact(:,2), 'r--', ...
-         dimensions, e_fact(:,3), 'g');
-title("errori di fattorizzazione");
-legend('householder-light','givens-light','qr');
-
-figure(5); 
-plot(dimensions, n_cond); title("numero di condizionamento");
-
-
+% print('plots/test_2_2','-dpng','-r0');
+% save('workspaces/test_2_2.mat');
 
 
 % ********************************************************************** %
@@ -801,6 +621,7 @@ for n = dimensions
 end
 
 figure(1); 
+subplot(2,2,1);
 semilogy(dimensions, e_sol(:,1), 'm', ...
          dimensions, e_sol(:,2), 'm--', ...
          dimensions, e_sol(:,3), 'g:', ...
@@ -808,7 +629,7 @@ semilogy(dimensions, e_sol(:,1), 'm', ...
 title("errori di soluzione relativi");
 legend('mychol','chol','pinv','backslash');
 
-figure(2); 
+subplot(2,2,2);
 semilogy(dimensions, t_sol(:,1), 'm', ...
          dimensions, t_sol(:,2), 'm--', ...
          dimensions, t_sol(:,3), 'g:', ...
@@ -816,14 +637,17 @@ semilogy(dimensions, t_sol(:,1), 'm', ...
 title("tempi di risoluzione");
 legend('mychol','chol','pinv','backslash');
 
-figure(4); 
+subplot(2,2,3);
 semilogy(dimensions, e_fact(:,1), 'm', ...
          dimensions, e_fact(:,2), 'm--');
 title("errori di fattorizzazione");
 legend('mychol','chol');
 
-figure(5); 
+subplot(2,2,4);
 plot(dimensions, n_cond); title("numero di condizionamento");
+
+% print('plots/test_3_1','-dpng','-r0');
+% save('workspaces/test_3_1.mat');
 
 
 % ********************************************************************** %
@@ -898,6 +722,7 @@ for n = dimensions
 end
 
 figure(1); 
+subplot(3,2,1);
 semilogy(dimensions, e_sol(:,1), 'b--', ...
          dimensions, e_sol(:,2), 'g', ...
          dimensions, e_sol(:,3), 'g:', ...
@@ -905,7 +730,7 @@ semilogy(dimensions, e_sol(:,1), 'b--', ...
 title("errori di soluzione relativi");
 legend('householder-light','qr','pinv','backslash');
 
-figure(2); 
+subplot(3,2,2);
 semilogy(dimensions, t_sol(:,1), 'b--', ...
          dimensions, t_sol(:,2), 'g', ...
          dimensions, t_sol(:,3), 'g:', ...
@@ -913,20 +738,23 @@ semilogy(dimensions, t_sol(:,1), 'b--', ...
 title("tempi di risoluzione");
 legend('householder-light','qr','pinv','backslash');
 
-figure(3); 
+subplot(3,2,3);
 semilogy(dimensions, e_orth(:,1), 'b--', ...
          dimensions, e_orth(:,2), 'g');
 title("errori di ortogonalizzazione");
 legend('householder-light','qr');
 
-figure(4); 
+subplot(3,2,4);
 semilogy(dimensions, e_fact(:,1), 'b--', ...
          dimensions, e_fact(:,2), 'g');
 title("errori di fattorizzazione");
 legend('householder-light','qr');
 
-figure(5); 
+subplot(3,2,5);
 plot(dimensions, n_cond); title("numero di condizionamento");
+
+% print('plots/test_3_2','-dpng','-r0');
+% save('workspaces/test_3_2.mat');
 
 
 
@@ -937,7 +765,7 @@ plot(dimensions, n_cond); title("numero di condizionamento");
 % ********************************************************************** %
 
 % ********************************************************************** %
-% TEST 4.1 sistema sovradimensionato
+% TEST 4.1 sistema quadrato, test con cholesky e qr
 % ********************************************************************** %
 
 clear variables;
@@ -946,8 +774,8 @@ i = 1;
 
 dimensions = 3:1:9;
 
-t_sol  = zeros(length(dimensions),6);
-e_sol  = zeros(length(dimensions),6);
+t_sol  = zeros(length(dimensions),5);
+e_sol  = zeros(length(dimensions),5);
 e_fact = zeros(length(dimensions),4);
 e_orth = zeros(length(dimensions),2);
 n_cond = zeros(length(dimensions),1);
@@ -955,9 +783,7 @@ n_cond = zeros(length(dimensions),1);
 for n = dimensions
     fprintf('n: %d\n',n);
     
-    m=10;
-	A_start = hilb(m); % hilb crea una matrice quadrata
-    A = A_start(:,1:n);
+    A = hilb(n);
     n_cond(i) = cond(A);
     
     sol = ones(n,1);
@@ -970,7 +796,7 @@ for n = dimensions
     x = R\y;
     t_sol(i,1) = toc;
     e_sol(i,1) = norm(x-sol)/norm_sol;
-    e_orth(i,1) = norm(Q*Q'-eye(m));
+    e_orth(i,1) = norm(Q*Q'-eye(n));
     e_fact(i,1) = norm(A-Q*R);
     
     tic;
@@ -979,7 +805,7 @@ for n = dimensions
     x = R\y;
     t_sol(i,2) = toc;
     e_sol(i,2) = norm(x-sol)/norm_sol;
-    e_orth(i,2) = norm(Q*Q'-eye(m));
+    e_orth(i,2) = norm(Q*Q'-eye(n));
     e_fact(i,2) = norm(A-Q*R);
     
 
@@ -1000,46 +826,40 @@ for n = dimensions
     e_fact(i,4) = norm(A'*A-R'*R);
     
     tic;
-    x = pinv(A)*b;
+    x = A\b;
     t_sol(i,5) = toc;
     e_sol(i,5) = norm(x-sol)/norm_sol;
-    
-    tic;
-    x = A\b;
-    t_sol(i,6) = toc;
-    e_sol(i,6) = norm(x-sol)/norm_sol;
     
     i = i+1;
 
 end
 
 figure(1); 
+subplot(3,2,1);
 semilogy(dimensions, e_sol(:,1), 'b--', ...
          dimensions, e_sol(:,2), 'g', ...
          dimensions, e_sol(:,3), 'm', ...
          dimensions, e_sol(:,4), 'm--', ...
-         dimensions, e_sol(:,5), 'g:', ...
-         dimensions, e_sol(:,6), 'g--');
+         dimensions, e_sol(:,5), 'g--');
 title("errori di soluzione relativi");
-legend('householder-light','qr','mychol','chol','pinv','backslash');
+legend('householder-light','qr','mychol','chol','backslash');
 
-figure(2); 
+subplot(3,2,2);
 semilogy(dimensions, t_sol(:,1), 'b--', ...
          dimensions, t_sol(:,2), 'g', ...
          dimensions, t_sol(:,3), 'm', ...
          dimensions, t_sol(:,4), 'm--', ...
-         dimensions, t_sol(:,5), 'g:', ...
-         dimensions, t_sol(:,6), 'g--');
+         dimensions, t_sol(:,5), 'g--');
 title("tempi di risoluzione");
-legend('householder-light','qr','mychol','chol','pinv','backslash');
+legend('householder-light','qr','mychol','chol','backslash');
 
-figure(3); 
+subplot(3,2,3); 
 semilogy(dimensions, e_orth(:,1), 'b--', ...
          dimensions, e_orth(:,2), 'g');
 title("errori di ortogonalizzazione");
 legend('householder-light','qr');
 
-figure(4); 
+subplot(3,2,4); 
 semilogy(dimensions, e_fact(:,1), 'b--', ...
          dimensions, e_fact(:,2), 'g', ...
          dimensions, e_fact(:,3), 'm', ...
@@ -1047,104 +867,12 @@ semilogy(dimensions, e_fact(:,1), 'b--', ...
 title("errori di fattorizzazione");
 legend('householder-light','qr','mychol','chol');
 
-figure(5); 
+subplot(3,2,5);
 semilogy(dimensions, n_cond); title("numero di condizionamento");
 
 
-% ********************************************************************** %
-% ********************************************************************** %
-% ***** PARTE 5: matrici sparse
-% ********************************************************************** %
-% ********************************************************************** %
-
-% ************************************************************************
-% TEST 5.1: analisi algoritmi con matrici sparse
-% ************************************************************************
-
-% NON VA: Warning: Matrix is singular to working precision.
-% 
-% clear variables;
-% 
-% i = 1;
-% 
-% dimensions = 50:50:300;
-% 
-% t_sol  = zeros(length(dimensions),4);
-% e_sol  = zeros(length(dimensions),4);
-% e_orth = zeros(length(dimensions),3);
-% % e_fact = zeros(length(dimensions),3);
-% % n_cond = zeros(length(dimensions),1);
-% 
-% for n = dimensions
-%     fprintf('n: %d\n',n);
-%     
-% 	A = sprand(n,n,0.01);
-% %     n_cond(i) = cond(A);
-%     
-%     sol = ones(n,1);
-%     norm_sol = norm(sol);
-%     b = A*sol;
-%     
-%     tic;
-%     [Q,R] = myqr(A, "householder-light");
-%     y = Q'*b;
-%     x = R\y;
-%     t_sol(i,1) = toc;
-%     e_sol(i,1) = norm(x-sol)/norm_sol;
-%     e_orth(i,1) = norm(Q*Q'-eye(n));
-% %     e_fact(i,1) = norm(A-Q*R);
-% 
-%     tic;
-%     [Q,R] = myqr(A, "givens-light");
-%     y = Q'*b;
-%     x = R\y;
-%     t_sol(i,2) = toc;
-%     e_sol(i,2) = norm(x-sol)/norm_sol;
-%     e_orth(i,2) = norm(Q*Q'-eye(n));
-% %     e_fact(i,2) = norm(A-Q*R);
-%     
-%     tic;
-%     [Q,R] = qr(A);
-%     y = Q'*b;
-%     x = R\y;
-%     t_sol(i,3) = toc;
-%     e_sol(i,3) = norm(x-sol)/norm_sol;
-%     e_orth(i,3) = norm(Q*Q'-eye(n));
-% %     e_fact(i,3) = norm(A-Q*R);
-%     
-%     tic;
-%     x = A\b;
-%     t_sol(i,4) = toc;
-%     e_sol(i,4) = norm(x-sol)/norm_sol;
-%     
-%     i = i+1;
-% 
-% end
-% 
-% figure(1); 
-% semilogy(dimensions, e_sol); title("errori di soluzione relativi");
-% legend('householder-light','givens-light','qr','backslash');
-% 
-% figure(2); 
-% semilogy(dimensions, t_sol); title("tempi di risoluzione");
-% legend('householder-light','givens-light','qr','backslash');
-% 
-% figure(3); 
-% semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
-% legend('householder-light','givens-light','qr');
-% 
-% figure(4); 
-% semilogy(dimensions, e_fact); title("errori di fattorizzazione");
-% legend('householder-light','givens-light','qr');
-
-
-
-% ************************************************************************
-% TEST
-% ************************************************************************
-
-
-
+% print('plots/test_4_1','-dpng','-r0');
+% save('workspaces/test_4_1.mat');
 
 
 
