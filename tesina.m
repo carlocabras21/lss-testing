@@ -2,6 +2,12 @@
 
 % IMPORTANTE: lanciare i test uno alla volta 
 
+% MAPPA DEI COLORI DELLE LINEE DEI GRAFICI
+% blu: Householder (tratteggiato: light)
+% rosso: Givens (tratteggiato: light)
+% magenta: Cholesky  (tratteggiato: di Matlab)
+% verde: qr Matlab (tratteggiato: backslash, puntini: pseudoinversa)
+
 % ********************************************************************** %
 % ********************************************************************** %
 % ***** PARTE 1: sistemi quadrati
@@ -91,19 +97,42 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione relativi");
+semilogy(dimensions, e_sol(:,1), 'b', ...
+         dimensions, e_sol(:,2), 'b--', ...
+         dimensions, e_sol(:,3), 'r', ...
+         dimensions, e_sol(:,4), 'r--', ...
+         dimensions, e_sol(:,5), 'g', ...
+         dimensions, e_sol(:,6), 'g--');
+title("errori di soluzione relativi");
 legend('householder','householder-light','givens','givens-light','qr','backslash');
 
 figure(2); 
-semilogy(dimensions, t_sol); title("tempi di risoluzione");
+semilogy(dimensions, t_sol(:,1), 'b', ...
+         dimensions, t_sol(:,2), 'b--', ...
+         dimensions, t_sol(:,3), 'r', ...
+         dimensions, t_sol(:,4), 'r--', ...
+         dimensions, t_sol(:,5), 'g', ...
+         dimensions, t_sol(:,6), 'g--');
+title("tempi di risoluzione");
 legend('householder','householder-light','givens','givens-light','qr','backslash');
 
+
 figure(3); 
-semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+semilogy(dimensions, e_orth(:,1), 'b', ...
+         dimensions, e_orth(:,2), 'b--', ...
+         dimensions, e_orth(:,3), 'r', ...
+         dimensions, e_orth(:,4), 'r--', ...
+         dimensions, e_orth(:,5), 'g');
+title("errori di ortogonalizzazione");
 legend('householder','householder-light','givens','givens-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_fact); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact(:,1), 'b', ...
+         dimensions, e_fact(:,2), 'b--', ...
+         dimensions, e_fact(:,3), 'r', ...
+         dimensions, e_fact(:,4), 'r--', ...
+         dimensions, e_fact(:,5), 'g');
+title("errori di fattorizzazione");
 legend('householder','householder-light','givens','givens-light','qr');
 
 figure(5); 
@@ -174,19 +203,33 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione relativi");
+semilogy(dimensions, e_sol(:,1), 'b--', ...
+         dimensions, e_sol(:,2), 'r--', ...
+         dimensions, e_sol(:,3), 'g', ...
+         dimensions, e_sol(:,4), 'g--');
+title("errori di soluzione relativi");
 legend('householder-light','givens-light','qr','backslash');
 
 figure(2); 
-semilogy(dimensions, t_sol); title("tempi di risoluzione");
+semilogy(dimensions, t_sol(:,1), 'b--', ...
+         dimensions, t_sol(:,2), 'r--', ...
+         dimensions, t_sol(:,3), 'g', ...
+         dimensions, t_sol(:,4), 'g--');
+title("tempi di risoluzione");
 legend('householder-light','givens-light','qr','backslash');
 
 figure(3); 
-semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+semilogy(dimensions, e_orth(:,1), 'b--', ...
+         dimensions, e_orth(:,2), 'r--', ...
+         dimensions, e_orth(:,3), 'g');
+title("errori di ortogonalizzazione");
 legend('householder-light','givens-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_fact); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact(:,1), 'b--', ...
+         dimensions, e_fact(:,2), 'r--', ...
+         dimensions, e_fact(:,3), 'g');
+title("errori di fattorizzazione");
 legend('householder-light','givens-light','qr');
 
 figure(5); 
@@ -350,26 +393,38 @@ for n = dimensions
     i = i+1;
 
 end
-
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione relativi");
+semilogy(dimensions, e_sol(:,1), 'b--', ...
+         dimensions, e_sol(:,2), 'r--', ...
+         dimensions, e_sol(:,3), 'g', ...
+         dimensions, e_sol(:,4), 'g--');
+title("errori di soluzione relativi");
 legend('householder-light','givens-light','qr','backslash');
 
 figure(2); 
-semilogy(dimensions, t_sol); title("tempi di risoluzione");
+semilogy(dimensions, t_sol(:,1), 'b--', ...
+         dimensions, t_sol(:,2), 'r--', ...
+         dimensions, t_sol(:,3), 'g', ...
+         dimensions, t_sol(:,4), 'g--');
+title("tempi di risoluzione");
 legend('householder-light','givens-light','qr','backslash');
 
 figure(3); 
-semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+semilogy(dimensions, e_orth(:,1), 'b--', ...
+         dimensions, e_orth(:,2), 'r--', ...
+         dimensions, e_orth(:,3), 'g');
+title("errori di ortogonalizzazione");
 legend('householder-light','givens-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_fact); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact(:,1), 'b--', ...
+         dimensions, e_fact(:,2), 'r--', ...
+         dimensions, e_fact(:,3), 'g');
+title("errori di fattorizzazione");
 legend('householder-light','givens-light','qr');
 
 figure(5); 
 plot(dimensions, n_cond); title("numero di condizionamento");
-
 
 % ********************************************************************** %
 % ********************************************************************** %
@@ -433,16 +488,28 @@ for n = dimensions
     i = i+1;
 end
 
+% mychol, chol, pinv, backslash
+
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione relativi");
+semilogy(dimensions, e_sol(:,1), 'm', ...
+         dimensions, e_sol(:,2), 'm--', ...
+         dimensions, e_sol(:,3), 'g:', ...
+         dimensions, e_sol(:,4), 'g--');
+title("errori di soluzione relativi");
 legend('mychol','chol','pinv','backslash');
 
 figure(2); 
-semilogy(dimensions, t_sol); title("tempi di risoluzione");
+semilogy(dimensions, t_sol(:,1), 'm', ...
+         dimensions, t_sol(:,2), 'm--', ...
+         dimensions, t_sol(:,3), 'g:', ...
+         dimensions, t_sol(:,4), 'g--');
+title("tempi di risoluzione");
 legend('mychol','chol','pinv','backslash');
 
 figure(4); 
-semilogy(dimensions, e_fact); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact(:,1), 'm', ...
+         dimensions, e_fact(:,2), 'm--');
+title("errori di fattorizzazione");
 legend('mychol','chol');
 
 figure(5); 
@@ -512,19 +579,31 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione relativi");
+semilogy(dimensions, e_sol(:,1), 'b--', ...
+         dimensions, e_sol(:,2), 'g', ...
+         dimensions, e_sol(:,3), 'g:', ...
+         dimensions, e_sol(:,4), 'g--');
+title("errori di soluzione relativi");
 legend('householder-light','qr','pinv','backslash');
 
 figure(2); 
-semilogy(dimensions, t_sol); title("tempi di risoluzione");
+semilogy(dimensions, t_sol(:,1), 'b--', ...
+         dimensions, t_sol(:,2), 'g', ...
+         dimensions, t_sol(:,3), 'g:', ...
+         dimensions, t_sol(:,4), 'g--');
+title("tempi di risoluzione");
 legend('householder-light','qr','pinv','backslash');
 
 figure(3); 
-semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+semilogy(dimensions, e_orth(:,1), 'b--', ...
+         dimensions, e_orth(:,2), 'g');
+title("errori di ortogonalizzazione");
 legend('householder-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_fact); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact(:,1), 'b--', ...
+         dimensions, e_fact(:,2), 'g');
+title("errori di fattorizzazione");
 legend('householder-light','qr');
 
 figure(5); 
@@ -608,19 +687,35 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione relativi");
+semilogy(dimensions, e_sol(:,1), 'b--', ...
+         dimensions, e_sol(:,2), 'r--', ...
+         dimensions, e_sol(:,3), 'g', ...
+         dimensions, e_sol(:,4), 'g:', ...
+         dimensions, e_sol(:,5), 'g--');
+title("errori di soluzione relativi");
 legend('householder-light','givens-light','qr','pinv','backslash');
 
 figure(2); 
-semilogy(dimensions, t_sol); title("tempi di risoluzione");
+semilogy(dimensions, t_sol(:,1), 'b--', ...
+         dimensions, t_sol(:,2), 'r--', ...
+         dimensions, t_sol(:,3), 'g', ...
+         dimensions, t_sol(:,4), 'g:', ...
+         dimensions, t_sol(:,5), 'g--');
+title("tempi di risoluzione");
 legend('householder-light','givens-light','qr','pinv','backslash');
 
 figure(3); 
-semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+semilogy(dimensions, e_orth(:,1), 'b--', ...
+         dimensions, e_orth(:,2), 'r--', ...
+         dimensions, e_orth(:,3), 'g');
+title("errori di ortogonalizzazione");
 legend('householder-light','givens-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_fact); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact(:,1), 'b--', ...
+         dimensions, e_fact(:,2), 'r--', ...
+         dimensions, e_fact(:,3), 'g');
+title("errori di fattorizzazione");
 legend('householder-light','givens-light','qr');
 
 figure(5); 
@@ -706,15 +801,25 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione relativi");
+semilogy(dimensions, e_sol(:,1), 'm', ...
+         dimensions, e_sol(:,2), 'm--', ...
+         dimensions, e_sol(:,3), 'g:', ...
+         dimensions, e_sol(:,4), 'g--');
+title("errori di soluzione relativi");
 legend('mychol','chol','pinv','backslash');
 
 figure(2); 
-semilogy(dimensions, t_sol); title("tempi di risoluzione");
+semilogy(dimensions, t_sol(:,1), 'm', ...
+         dimensions, t_sol(:,2), 'm--', ...
+         dimensions, t_sol(:,3), 'g:', ...
+         dimensions, t_sol(:,4), 'g--');
+title("tempi di risoluzione");
 legend('mychol','chol','pinv','backslash');
 
 figure(4); 
-semilogy(dimensions, e_fact); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact(:,1), 'm', ...
+         dimensions, e_fact(:,2), 'm--');
+title("errori di fattorizzazione");
 legend('mychol','chol');
 
 figure(5); 
@@ -793,19 +898,31 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione relativi");
+semilogy(dimensions, e_sol(:,1), 'b--', ...
+         dimensions, e_sol(:,2), 'g', ...
+         dimensions, e_sol(:,3), 'g:', ...
+         dimensions, e_sol(:,4), 'g--');
+title("errori di soluzione relativi");
 legend('householder-light','qr','pinv','backslash');
 
 figure(2); 
-semilogy(dimensions, t_sol); title("tempi di risoluzione");
+semilogy(dimensions, t_sol(:,1), 'b--', ...
+         dimensions, t_sol(:,2), 'g', ...
+         dimensions, t_sol(:,3), 'g:', ...
+         dimensions, t_sol(:,4), 'g--');
+title("tempi di risoluzione");
 legend('householder-light','qr','pinv','backslash');
 
 figure(3); 
-semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+semilogy(dimensions, e_orth(:,1), 'b--', ...
+         dimensions, e_orth(:,2), 'g');
+title("errori di ortogonalizzazione");
 legend('householder-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_fact); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact(:,1), 'b--', ...
+         dimensions, e_fact(:,2), 'g');
+title("errori di fattorizzazione");
 legend('householder-light','qr');
 
 figure(5); 
@@ -897,19 +1014,37 @@ for n = dimensions
 end
 
 figure(1); 
-semilogy(dimensions, e_sol); title("errori di soluzione relativi");
+semilogy(dimensions, e_sol(:,1), 'b--', ...
+         dimensions, e_sol(:,2), 'g', ...
+         dimensions, e_sol(:,3), 'm', ...
+         dimensions, e_sol(:,4), 'm--', ...
+         dimensions, e_sol(:,5), 'g:', ...
+         dimensions, e_sol(:,6), 'g--');
+title("errori di soluzione relativi");
 legend('householder-light','qr','mychol','chol','pinv','backslash');
 
 figure(2); 
-semilogy(dimensions, t_sol); title("tempi di risoluzione");
+semilogy(dimensions, t_sol(:,1), 'b--', ...
+         dimensions, t_sol(:,2), 'g', ...
+         dimensions, t_sol(:,3), 'm', ...
+         dimensions, t_sol(:,4), 'm--', ...
+         dimensions, t_sol(:,5), 'g:', ...
+         dimensions, t_sol(:,6), 'g--');
+title("tempi di risoluzione");
 legend('householder-light','qr','mychol','chol','pinv','backslash');
 
 figure(3); 
-semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+semilogy(dimensions, e_orth(:,1), 'b--', ...
+         dimensions, e_orth(:,2), 'g');
+title("errori di ortogonalizzazione");
 legend('householder-light','qr');
 
 figure(4); 
-semilogy(dimensions, e_fact); title("errori di fattorizzazione");
+semilogy(dimensions, e_fact(:,1), 'b--', ...
+         dimensions, e_fact(:,2), 'g', ...
+         dimensions, e_fact(:,3), 'm', ...
+         dimensions, e_fact(:,4), 'm--');
+title("errori di fattorizzazione");
 legend('householder-light','qr','mychol','chol');
 
 figure(5); 
