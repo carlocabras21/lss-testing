@@ -1,22 +1,6 @@
 % TESINA - Computational Mathematics, Carlo Cabras - 60/73/65113
 
-% da testare:
-%  - al variare di m ed n
-%     - per ogni algoritmo mio e confronto con MATLAB
-%        - tempi di calcolo
-%        - condizionamento
-%        - errori relativi: norm(x-sol)/norm(sol)
-% usare pseudoinversa
-% testare backslash
-%
-% matrici sparse? 
-% // FATTO: di Hilbert? sì: studiare sistemi malcondizionati e 
-% comportamento algoritmi
-
-% CONTROLLARE INDICE k: potrebbero esserci errori, visto che per certi
-% algoritmi calcolo certi errori e per altri non ne calcolo. DA RIVEDERE
-
-% IMPORTANTE: lanciare i test uno alla volta per evitare blocchi
+% IMPORTANTE: lanciare i test uno alla volta 
 
 % ********************************************************************** %
 % ********************************************************************** %
@@ -51,63 +35,55 @@ for n = dimensions
     norm_sol = norm(sol);
     b = A*sol;
     
-    k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
-           % tenere conto di quanti algoritmi sto testando
     tic;
     [Q,R] = myqr(A, "householder");
     y = Q'*b;
     x = R\y;
-    t_sol(i,k)  = toc;
-    e_sol(i,k)  = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(n));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k + 1;
+    t_sol(i,1)  = toc;
+    e_sol(i,1)  = norm(x-sol)/norm_sol;
+    e_orth(i,1) = norm(Q*Q'-eye(n));
+    e_fact(i,1) = norm(A-Q*R);
     
     tic;
     [Q,R] = myqr(A, "householder-light");
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(n));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k+1;
+    t_sol(i,2) = toc;
+    e_sol(i,2) = norm(x-sol)/norm_sol;
+    e_orth(i,2) = norm(Q*Q'-eye(n));
+    e_fact(i,2) = norm(A-Q*R);
     
     tic;
     [Q,R] = myqr(A, "givens");
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(n));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k + 1;
+    t_sol(i,3) = toc;
+    e_sol(i,3) = norm(x-sol)/norm_sol;
+    e_orth(i,3) = norm(Q*Q'-eye(n));
+    e_fact(i,3) = norm(A-Q*R);
     
     tic;
     [Q,R] = myqr(A, "givens-light");
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(n));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k + 1;
+    t_sol(i,4) = toc;
+    e_sol(i,4) = norm(x-sol)/norm_sol;
+    e_orth(i,4) = norm(Q*Q'-eye(n));
+    e_fact(i,4) = norm(A-Q*R);
     
     tic;
     [Q,R] = qr(A);
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(n));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k + 1;
+    t_sol(i,5) = toc;
+    e_sol(i,5) = norm(x-sol)/norm_sol;
+    e_orth(i,5) = norm(Q*Q'-eye(n));
+    e_fact(i,5) = norm(A-Q*R);
     
     tic;
     x = A\b;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
+    t_sol(i,6) = toc;
+    e_sol(i,6) = norm(x-sol)/norm_sol;
     
     
     i = i+1;
@@ -143,7 +119,7 @@ clear variables;
 
 i = 1;
 
-dimensions = 50:50:500;
+dimensions = 50:50:300;
 
 t_sol  = zeros(length(dimensions),4);
 e_sol  = zeros(length(dimensions),4);
@@ -161,44 +137,37 @@ for n = dimensions
     norm_sol = norm(sol);
     b = A*sol;
     
-    k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
-           % tenere conto di quanti algoritmi sto testando
-    
     tic;
     [Q,R] = myqr(A, "householder-light");
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(n));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k+1;
+    t_sol(i,1) = toc;
+    e_sol(i,1) = norm(x-sol)/norm_sol;
+    e_orth(i,1) = norm(Q*Q'-eye(n));
+    e_fact(i,1) = norm(A-Q*R);
 
     tic;
     [Q,R] = myqr(A, "givens-light");
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(n));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k + 1;
+    t_sol(i,2) = toc;
+    e_sol(i,2) = norm(x-sol)/norm_sol;
+    e_orth(i,2) = norm(Q*Q'-eye(n));
+    e_fact(i,2) = norm(A-Q*R);
     
     tic;
     [Q,R] = qr(A);
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(n));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k + 1;
+    t_sol(i,3) = toc;
+    e_sol(i,3) = norm(x-sol)/norm_sol;
+    e_orth(i,3) = norm(Q*Q'-eye(n));
+    e_fact(i,3) = norm(A-Q*R);
     
     tic;
     x = A\b;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
+    t_sol(i,4) = toc;
+    e_sol(i,4) = norm(x-sol)/norm_sol;
     
     i = i+1;
 
@@ -345,45 +314,39 @@ for n = dimensions
     sol = ones(dim,1);
     norm_sol = norm(sol);
     b = A*sol;
-    
-    k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
-           % tenere conto di quanti algoritmi sto testando
-    
+
     tic;
     [Q,R] = myqr(A, "householder-light");
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(dim));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k+1;
+    t_sol(i,1) = toc;
+    e_sol(i,1) = norm(x-sol)/norm_sol;
+    e_orth(i,1) = norm(Q*Q'-eye(dim));
+    e_fact(i,1) = norm(A-Q*R);
     
     tic;
     [Q,R] = myqr(A, "givens-light");
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(dim));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k + 1;
+    t_sol(i,2) = toc;
+    e_sol(i,2) = norm(x-sol)/norm_sol;
+    e_orth(i,2) = norm(Q*Q'-eye(dim));
+    e_fact(i,2) = norm(A-Q*R);
     
     tic;
     [Q,R] = qr(A);
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(dim));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k + 1;
+    t_sol(i,3) = toc;
+    e_sol(i,3) = norm(x-sol)/norm_sol;
+    e_orth(i,3) = norm(Q*Q'-eye(dim));
+    e_fact(i,3) = norm(A-Q*R);
     
     tic;
     x = A\b;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
+    t_sol(i,4) = toc;
+    e_sol(i,4) = norm(x-sol)/norm_sol;
+    
     i = i+1;
 
 end
@@ -440,39 +403,32 @@ for n = dimensions
     sol = ones(n,1);
     norm_sol = norm(sol);
     b = A*sol;
-    
-    k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
-           % tenere conto di quanti algoritmi sto testando
 
     tic;
     R = mychol(A'*A);
     y = R'\(A'*b);
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_fact(i,k) = norm(A'*A-R'*R);
-    k = k + 1;
+    t_sol(i,1) = toc;
+    e_sol(i,1) = norm(x-sol)/norm_sol;
+    e_fact(i,1) = norm(A'*A-R'*R);
     
     tic;
     R = chol(A'*A);
     y = R'\(A'*b);
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_fact(i,k) = norm(A'*A-R'*R);
-    k = k + 1;
+    t_sol(i,2) = toc;
+    e_sol(i,2) = norm(x-sol)/norm_sol;
+    e_fact(i,2) = norm(A'*A-R'*R);
     
     tic;
     x = pinv(A)*b;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
+    t_sol(i,3) = toc;
+    e_sol(i,3) = norm(x-sol)/norm_sol;
     
     tic;
     x = A\b;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
+    t_sol(i,4) = toc;
+    e_sol(i,4) = norm(x-sol)/norm_sol;
     
     i = i+1;
 end
@@ -504,7 +460,7 @@ clear variables;
 
 i = 1;
 
-dimensions = 100:100:500;
+dimensions = 50:50:200;
 
 t_sol  = zeros(length(dimensions),4);
 e_sol  = zeros(length(dimensions),4);
@@ -515,7 +471,7 @@ n_cond = zeros(length(dimensions),1);
 for n = dimensions
     fprintf('n: %d\n',n);
     
-    m = 1600;
+    m = 250;
 	A = rand(m,n);
     n_cond(i) = cond(A);
     
@@ -523,40 +479,33 @@ for n = dimensions
     norm_sol = norm(sol);
     b = A*sol;
     
-    k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
-           % tenere conto di quanti algoritmi sto testando
-    
     tic;
     [Q,R] = myqr(A, "householder-light");
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(m));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k+1;
+    t_sol(i,1) = toc;
+    e_sol(i,1) = norm(x-sol)/norm_sol;
+    e_orth(i,1) = norm(Q*Q'-eye(m));
+    e_fact(i,1) = norm(A-Q*R);
 
     tic;
     [Q,R] = qr(A);
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(m));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k + 1;
+    t_sol(i,2) = toc;
+    e_sol(i,2) = norm(x-sol)/norm_sol;
+    e_orth(i,2) = norm(Q*Q'-eye(m));
+    e_fact(i,2) = norm(A-Q*R);
         
     tic;
     x = pinv(A)*b;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
+    t_sol(i,3) = toc;
+    e_sol(i,3) = norm(x-sol)/norm_sol;
         
     tic;
     x = A\b;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
+    t_sol(i,4) = toc;
+    e_sol(i,4) = norm(x-sol)/norm_sol;
         
     i = i+1;
 
@@ -603,7 +552,7 @@ n_cond = zeros(length(dimensions),1);
 for n = dimensions
     fprintf('sottodiagonali: %d\n',n);
     
-    dim_m = 400;
+    dim_m = 150;
     dim_n = 100;
 	A = rand(dim_m,dim_n);
     for j = 1:dim_n
@@ -616,52 +565,44 @@ for n = dimensions
     sol = ones(dim_n,1);
     norm_sol = norm(sol);
     b = A*sol;
-    
-    k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
-           % tenere conto di quanti algoritmi sto testando
-    
+
     tic;
     [Q,R] = myqr(A, "householder-light");
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(dim_m));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k+1;
+    t_sol(i,1) = toc;
+    e_sol(i,1) = norm(x-sol)/norm_sol;
+    e_orth(i,1) = norm(Q*Q'-eye(dim_m));
+    e_fact(i,1) = norm(A-Q*R);
     
     tic;
     [Q,R] = myqr(A, "givens-light");
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(dim_m));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k + 1;
+    t_sol(i,2) = toc;
+    e_sol(i,2) = norm(x-sol)/norm_sol;
+    e_orth(i,2) = norm(Q*Q'-eye(dim_m));
+    e_fact(i,2) = norm(A-Q*R);
     
     tic;
     [Q,R] = qr(A);
     y = Q'*b;
     x = R\y;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    e_orth(i,k) = norm(Q*Q'-eye(dim_m));
-    e_fact(i,k) = norm(A-Q*R);
-    k = k + 1;
+    t_sol(i,3) = toc;
+    e_sol(i,3) = norm(x-sol)/norm_sol;
+    e_orth(i,3) = norm(Q*Q'-eye(dim_m));
+    e_fact(i,3) = norm(A-Q*R);
     
     tic;
     x = pinv(A)*b;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
+    t_sol(i,4) = toc;
+    e_sol(i,4) = norm(x-sol)/norm_sol;
      
     tic;
     x = A\b;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
-               
+    t_sol(i,5) = toc;
+    e_sol(i,5) = norm(x-sol)/norm_sol;
+    
     i = i+1;
 
 end
@@ -731,42 +672,34 @@ for n = dimensions
     sol = ones(m,1)*20;
     norm_sol = norm(sol);
     c = A'*sol;
-    
-    k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
-           % tenere conto di quanti algoritmi sto testando
-    
+
     tic;
     R = mychol(A'*A); 
     t = R'\c;
     z = R\t;
     y = A*z;
-    t_sol(i,k) = toc; 
-    e_sol(i,k) = norm(y-sol)/norm_sol; 
-    e_fact(i,k) = norm(A'*A-R'*R); 
-    k = k + 1;
+    t_sol(i,1) = toc; 
+    e_sol(i,1) = norm(y-sol)/norm_sol; 
+    e_fact(i,1) = norm(A'*A-R'*R); 
     
     tic;
     R = chol(A'*A); 
     t = R'\c;
     z = R\t;
     y = A*z;
-    t_sol(i,k) = toc; 
-    e_sol(i,k) = norm(y-sol)/norm_sol; 
-    e_fact(i,k) = norm(A'*A-R'*R); 
-    k = k + 1;
+    t_sol(i,2) = toc; 
+    e_sol(i,2) = norm(y-sol)/norm_sol; 
+    e_fact(i,2) = norm(A'*A-R'*R); 
     
     tic;
     x = pinv(A')*c;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
-    
+    t_sol(i,3) = toc;
+    e_sol(i,3) = norm(x-sol)/norm_sol;    
     
     tic;
     x = A'\c;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
+    t_sol(i,4) = toc;
+    e_sol(i,4) = norm(x-sol)/norm_sol;
     
     i = i+1;
 
@@ -825,42 +758,35 @@ for n = dimensions
     norm_sol = norm(sol);
     c = A'*sol;
     
-    k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
-           % tenere conto di quanti algoritmi sto testando
-    
     tic;
     [Q, R] = myqr(A'*A, 'householder-light'); 
     t = Q'*c;
     z = R\t;
     y = A*z;
-    t_sol(i,k) = toc; 
-    e_sol(i,k) = norm(y-sol)/norm_sol; 
-    e_fact(i,k) = norm(A'*A-Q*R); 
-    e_orth(i,k) = norm(Q*Q'-eye(n)); 
-    k = k + 1;
+    t_sol(i,1) = toc; 
+    e_sol(i,1) = norm(y-sol)/norm_sol; 
+    e_fact(i,1) = norm(A'*A-Q*R); 
+    e_orth(i,1) = norm(Q*Q'-eye(n)); 
     
     tic;
     [Q, R] = qr(A'*A); 
     t = Q'*c;
     z = R\t;
     y = A*z;
-    t_sol(i,k) = toc; 
-    e_sol(i,k) = norm(y-sol)/norm_sol; 
-    e_fact(i,k) = norm(A'*A-Q*R); 
-    e_orth(i,k) = norm(Q*Q'-eye(n)); 
-    k = k + 1;
+    t_sol(i,2) = toc; 
+    e_sol(i,2) = norm(y-sol)/norm_sol; 
+    e_fact(i,2) = norm(A'*A-Q*R); 
+    e_orth(i,2) = norm(Q*Q'-eye(n)); 
         
     tic;
     x = pinv(A')*c;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
+    t_sol(i,3) = toc;
+    e_sol(i,3) = norm(x-sol)/norm_sol;
         
     tic;
     x = A'\c;
-    t_sol(i,k) = toc;
-    e_sol(i,k) = norm(x-sol)/norm_sol;
-    k = k + 1;
+    t_sol(i,4) = toc;
+    e_sol(i,4) = norm(x-sol)/norm_sol;
     
     i = i+1;
 
@@ -884,6 +810,8 @@ legend('householder-light','qr');
 
 figure(5); 
 plot(dimensions, n_cond); title("numero di condizionamento");
+
+
 
 % ********************************************************************** %
 % ********************************************************************** %
@@ -918,9 +846,7 @@ for n = dimensions
     sol = ones(n,1);
     norm_sol = norm(sol);
     b = A*sol;
-    
-%     k = 1; % indice nelle matrici dei risultati; comodo perché non sto a
-           % tenere conto di quanti algoritmi sto testando
+
     tic;
     [Q,R] = myqr(A, "householder-light");
     y = Q'*b;
@@ -929,7 +855,6 @@ for n = dimensions
     e_sol(i,1) = norm(x-sol)/norm_sol;
     e_orth(i,1) = norm(Q*Q'-eye(m));
     e_fact(i,1) = norm(A-Q*R);
-%     k = k+1;
     
     tic;
     [Q,R] = qr(A);
@@ -939,7 +864,6 @@ for n = dimensions
     e_sol(i,2) = norm(x-sol)/norm_sol;
     e_orth(i,2) = norm(Q*Q'-eye(m));
     e_fact(i,2) = norm(A-Q*R);
-%     k = k + 1;
     
 
     tic;
@@ -949,7 +873,6 @@ for n = dimensions
     t_sol(i,3) = toc;
     e_sol(i,3) = norm(x-sol)/norm_sol;
     e_fact(i,3) = norm(A'*A-R'*R);
-%     k = k + 1;
     
     tic;
     R = chol(A'*A);
@@ -958,19 +881,16 @@ for n = dimensions
     t_sol(i,4) = toc;
     e_sol(i,4) = norm(x-sol)/norm_sol;
     e_fact(i,4) = norm(A'*A-R'*R);
-%     k = k + 1;
     
     tic;
     x = pinv(A)*b;
     t_sol(i,5) = toc;
     e_sol(i,5) = norm(x-sol)/norm_sol;
-%     k = k + 1;
     
     tic;
     x = A\b;
     t_sol(i,6) = toc;
     e_sol(i,6) = norm(x-sol)/norm_sol;
-%     k = k + 1;
     
     i = i+1;
 
@@ -996,10 +916,91 @@ figure(5);
 semilogy(dimensions, n_cond); title("numero di condizionamento");
 
 
+% ********************************************************************** %
+% ********************************************************************** %
+% ***** PARTE 5: matrici sparse
+% ********************************************************************** %
+% ********************************************************************** %
 
 % ************************************************************************
-% TEST
+% TEST 5.1: analisi algoritmi con matrici sparse
 % ************************************************************************
+
+% NON VA: Warning: Matrix is singular to working precision.
+% 
+% clear variables;
+% 
+% i = 1;
+% 
+% dimensions = 50:50:300;
+% 
+% t_sol  = zeros(length(dimensions),4);
+% e_sol  = zeros(length(dimensions),4);
+% e_orth = zeros(length(dimensions),3);
+% % e_fact = zeros(length(dimensions),3);
+% % n_cond = zeros(length(dimensions),1);
+% 
+% for n = dimensions
+%     fprintf('n: %d\n',n);
+%     
+% 	A = sprand(n,n,0.01);
+% %     n_cond(i) = cond(A);
+%     
+%     sol = ones(n,1);
+%     norm_sol = norm(sol);
+%     b = A*sol;
+%     
+%     tic;
+%     [Q,R] = myqr(A, "householder-light");
+%     y = Q'*b;
+%     x = R\y;
+%     t_sol(i,1) = toc;
+%     e_sol(i,1) = norm(x-sol)/norm_sol;
+%     e_orth(i,1) = norm(Q*Q'-eye(n));
+% %     e_fact(i,1) = norm(A-Q*R);
+% 
+%     tic;
+%     [Q,R] = myqr(A, "givens-light");
+%     y = Q'*b;
+%     x = R\y;
+%     t_sol(i,2) = toc;
+%     e_sol(i,2) = norm(x-sol)/norm_sol;
+%     e_orth(i,2) = norm(Q*Q'-eye(n));
+% %     e_fact(i,2) = norm(A-Q*R);
+%     
+%     tic;
+%     [Q,R] = qr(A);
+%     y = Q'*b;
+%     x = R\y;
+%     t_sol(i,3) = toc;
+%     e_sol(i,3) = norm(x-sol)/norm_sol;
+%     e_orth(i,3) = norm(Q*Q'-eye(n));
+% %     e_fact(i,3) = norm(A-Q*R);
+%     
+%     tic;
+%     x = A\b;
+%     t_sol(i,4) = toc;
+%     e_sol(i,4) = norm(x-sol)/norm_sol;
+%     
+%     i = i+1;
+% 
+% end
+% 
+% figure(1); 
+% semilogy(dimensions, e_sol); title("errori di soluzione relativi");
+% legend('householder-light','givens-light','qr','backslash');
+% 
+% figure(2); 
+% semilogy(dimensions, t_sol); title("tempi di risoluzione");
+% legend('householder-light','givens-light','qr','backslash');
+% 
+% figure(3); 
+% semilogy(dimensions, e_orth); title("errori di ortogonalizzazione");
+% legend('householder-light','givens-light','qr');
+% 
+% figure(4); 
+% semilogy(dimensions, e_fact); title("errori di fattorizzazione");
+% legend('householder-light','givens-light','qr');
 
 
 
